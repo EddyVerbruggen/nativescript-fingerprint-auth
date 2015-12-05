@@ -3,12 +3,20 @@
   "version": "0.0.1",
   "description": "A TouchID (fingerprint scanner) module for use in NativeScript apps",
   "main": "touchid.js",
+  "nativescript": {
+    "platforms": {
+      "ios": "1.4.0"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/eddyverbruggen/nativescript-touchid.git"
   },
   "keywords": [
-    "NativeScript"
+    "NativeScript",
+    "TouchID",
+    "Fingerprint",
+    "Fingerprint scanner"
   ],
   "author": {
     "name": "Eddy Verbruggen",
@@ -22,6 +30,5 @@
   "bugs": {
     "url": "https://github.com/eddyverbruggen/nativescript-touchid/issues"
   },
-  "homepage": "https://github.com/eddyverbruggen/nativescript-touchid",
-  "readmeFilename": "README.md"
+  "homepage": "https://github.com/eddyverbruggen/nativescript-touchid"
 }
