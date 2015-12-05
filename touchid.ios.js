@@ -18,15 +18,11 @@ var verifyFingerprint = function (arg) {
   return new Promise(function (resolve, reject) {
     try {
 
-      //if (!available()) {
-      //  reject("No TouchID available");
-      //} else {
-
       if (keychainItemServiceName == null) {
         var bundleID = NSBundle.mainBundle().infoDictionary.objectForKey("CFBundleIdentifier");
         keychainItemServiceName = bundleID + ".TouchID";
+        console.log("---- keychainItemServiceName " + keychainItemServiceName);
       }
-      console.log("keychainItemServiceName: " + keychainItemServiceName);
 
       if (!createKeyChainEntry()) {
         console.log("Keychain trouble. Falling back to verifyFingerprintWithCustomPasswordFallback.");
@@ -46,6 +42,7 @@ var verifyFingerprint = function (arg) {
 
         // Start the query and the fingerprint scan and/or device passcode validation
         var res = SecItemCopyMatching(query, null);
+        console.log("res: " + res); // 0 = noErr
         resolve(res == noErr);
       }
       //}
@@ -60,16 +57,25 @@ var verifyFingerprint = function (arg) {
 var verifyFingerprintWithCustomPasswordFallback = function (arg) {
   return new Promise(function (resolve, reject) {
     try {
-      if (available()) {
+      var laContext = LAContext.alloc().init();
+      if (laContext.canEvaluatePolicyError(LAPolicyDeviceOwnerAuthenticationWithBiometrics, null)) {
         var message = arg != null && arg.message || "Scan your finger";
-        var callback = function(authOK, error) {
-          console.log("Fingerprint scanned ok? " + authOK); // TODO this is called, but..
-          resolve(authOK); // .. this is never called!
-        };
-        LAContext.alloc().init().evaluatePolicyLocalizedReasonReply(
-            LAPolicyDeviceOwnerAuthenticationWithBiometrics, message, callback);
+        if (arg != null && arg.fallbackMessage) {
+          laContext.localizedFallbackTitle = arg.fallbackMessage;
+        }
+        laContext.evaluatePolicyLocalizedReasonReply(
+            LAPolicyDeviceOwnerAuthenticationWithBiometrics,
+            message,
+            function (ok, error) {
+              if (ok) {
+                resolve(ok);
+              } else {
+                reject(error);
+              }
+            }
+        );
       } else {
-        reject("No TouchID available");
+        reject("Not available");
       }
     } catch (ex) {
       console.log("Error in touchid.verifyFingerprintWithCustomPasswordFallback: " + ex);
@@ -84,8 +90,6 @@ var createKeyChainEntry = function () {
   attributes.setObjectForKey(keychainItemIdentifier, kSecAttrAccount);
   attributes.setObjectForKey(keychainItemServiceName, kSecAttrService);
 
-  console.log("keychain attributes: " + attributes);
-
   var accessControlRef = SecAccessControlCreateWithFlags(
       kCFAllocatorDefault,
       kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
@@ -97,9 +101,14 @@ var createKeyChainEntry = function () {
     return false;
   } else {
     attributes.setObjectForKey(accessControlRef, kSecAttrAccessControl);
-    attributes.setObjectForKey(true, kSecUseNoAuthenticationUI);
+    attributes.setObjectForKey(1, kSecUseNoAuthenticationUI);
     // The content of the password is not important
-    attributes.setObjectForKey("dummy content", kSecValueData);
+    var htmlString = NSString.stringWithString("dummy content");
+    var nsData = htmlString.dataUsingEncoding(NSUTF8StringEncoding);
+    attributes.setObjectForKey(nsData, kSecValueData);
+
+    console.log("keychain attributes: " + attributes);
+
     SecItemAdd(attributes, null);
     return true;
   }
