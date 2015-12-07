@@ -5,7 +5,7 @@ Use the iOS fingerprint scanner in your {N} app.
 <img src="images/fingerprint.png" />
 
 ### Use when
-* You want to know if the device runing your app has enrolled for Touch ID,
+* You want to know if the device runing your app has enrolled for [Touch ID](https://support.apple.com/en-us/HT201371),
 * You want to leverage the TouchID sensor in your {N} app.
 
 ## Installation
@@ -34,7 +34,10 @@ Here are the supported functions:
 ### function: verifyFingerprint
 
 ```js
-  touchid.verifyFingerprint().then(
+  touchid.verifyFingerprint({
+    message: 'Scan yer finger', // optional
+    localizedFallbackTitle: 'Enter PIN' // optional
+  }).then(
       function() {
         console.log("Fingerprint was OK");
       },
