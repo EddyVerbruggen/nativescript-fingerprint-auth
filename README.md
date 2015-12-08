@@ -36,7 +36,7 @@ Here are the supported functions:
 ```js
   touchid.verifyFingerprint({
     message: 'Scan yer finger', // optional
-    localizedFallbackTitle: 'Enter PIN' // optional
+    fallbackTitle: 'Enter PIN' // optional
   }).then(
       function() {
         console.log("Fingerprint was OK");
