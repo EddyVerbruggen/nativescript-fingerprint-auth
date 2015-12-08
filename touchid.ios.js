@@ -117,4 +117,4 @@ var createKeyChainEntry = function () {
 
 exports.available = available;
 exports.verifyFingerprint = verifyFingerprint;
-exports.verifyFingerprintWithCustomPasswordFallback = verifyFingerprintWithCustomPasswordFallback;
+exports.verifyFingerprintWithPasscodeFallback = verifyFingerprintWithPasscodeFallback;
