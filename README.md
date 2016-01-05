@@ -42,7 +42,10 @@ Here are the supported functions:
         console.log("Fingerprint was OK");
       },
       function(error) {
-        console.log("Fingerprint NOT OK, here's why: " + JSON.stringify(error));
+        console.log("Fingerprint NOT OK" + (error.code ? ". Code: " + error.code : ""));
       }
   )
 ```
+
+## Changelog
+1.1.0  Added Android platform which will always return false for `touchid.available`.
