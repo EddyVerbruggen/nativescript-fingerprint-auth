@@ -38,7 +38,7 @@ var verifyFingerprint = function (arg) {
         reject("Not available");
       }
     } catch (ex) {
-      console.log("Error in touchid.verifyFingerprintWithCustomPasswordFallback: " + ex);
+      console.log("Error in touchid.verifyFingerprint: " + ex);
       reject(ex);
     }
   });

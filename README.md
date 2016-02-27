@@ -33,8 +33,8 @@ If you want a quickstart, [clone our demo app](https://github.com/EddyVerbruggen
 
 ```js
   touchid.verifyFingerprint({
-    message: 'Scan yer finger', // optional
-    fallbackTitle: 'Enter PIN' // optional
+    message: 'Scan yer finger', // optional, shown in the fingerprint dialog (default: 'Scan your finger').
+    fallbackMessage: 'Enter PIN' // optional, the button label when scanning fails (default: 'Enter password').
   }).then(
       function() {
         console.log("Fingerprint was OK");
@@ -46,4 +46,5 @@ If you want a quickstart, [clone our demo app](https://github.com/EddyVerbruggen
 ```
 
 ## Changelog
+1.1.1  Added TypeScript definitions.
 1.1.0  Added Android platform which will always return false for `touchid.available`.
