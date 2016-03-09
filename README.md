@@ -18,6 +18,8 @@ tns plugin add nativescript-touchid
 
 If you want a quickstart, [clone our demo app](https://github.com/EddyVerbruggen/nativescript-touchid-demo).
 
+Want a nicer guide than these raw code samples? Read [Nic Raboy's blog post about this plugin](https://www.thepolyglotdeveloper.com/2016/03/add-touch-id-authentication-support-to-your-nativescript-app/).
+
 ### function: available
 ```js
   var touchid = require("nativescript-touchid");
