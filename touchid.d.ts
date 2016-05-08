@@ -6,6 +6,14 @@ declare module "nativescript-touchid" {
      * Default: 'Scan your finger'.
      */
     message?: string;
+  }
+
+  export interface verifyFingerprintWithCustomFallbackOptions {
+    /**
+     * The optional message in the fingerprint dialog.
+     * Default: 'Scan your finger'.
+     */
+    message?: string;
 
     /**
      * The optional button label when scanning the fingerprint fails.
@@ -23,5 +31,5 @@ declare module "nativescript-touchid" {
    * Gets any currently present text from the clipboard.
    */
   export function verifyFingerprint(options: VerifyFingerprintOptions): Promise<string>;
-  export function verifyFingerprintWithCustomFallback(options: VerifyFingerprintOptions): Promise<string>;
+  export function verifyFingerprintWithCustomFallback(options: verifyFingerprintWithCustomFallbackOptions): Promise<string>;
 }
