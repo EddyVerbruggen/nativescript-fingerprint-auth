@@ -9,3 +9,9 @@ exports.verifyFingerprint = function () {
     reject("Not available");
   });
 };
+
+exports.verifyFingerprintWithCustomFallback = function () {
+  return new Promise(function (resolve, reject) {
+    reject("Not available");
+  });
+};

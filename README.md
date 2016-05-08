@@ -35,6 +35,21 @@ Want a nicer guide than these raw code samples? Read [Nic Raboy's blog post abou
 
 ```js
   touchid.verifyFingerprint({
+    message: 'Scan yer finger' // optional, shown in the fingerprint dialog (default: 'Scan your finger').
+  }).then(
+      function() {
+        console.log("Fingerprint was OK");
+      },
+      function(error) {
+        console.log("Fingerprint NOT OK" + (error.code ? ". Code: " + error.code : ""));
+      }
+  )
+```
+
+### function: verifyFingerprintWithCustomFallback
+
+```js
+  touchid.verifyFingerprintWithCustomFallback({
     message: 'Scan yer finger', // optional, shown in the fingerprint dialog (default: 'Scan your finger').
     fallbackMessage: 'Enter PIN' // optional, the button label when scanning fails (default: 'Enter password').
   }).then(
@@ -48,5 +63,6 @@ Want a nicer guide than these raw code samples? Read [Nic Raboy's blog post abou
 ```
 
 ## Changelog
+1.2.0  You can now use the built-in passcode interface as fallback.
 1.1.1  Added TypeScript definitions.
 1.1.0  Added Android platform which will always return false for `touchid.available`.

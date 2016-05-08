@@ -23,4 +23,5 @@ declare module "nativescript-touchid" {
    * Gets any currently present text from the clipboard.
    */
   export function verifyFingerprint(options: VerifyFingerprintOptions): Promise<string>;
+  export function verifyFingerprintWithCustomFallback(options: VerifyFingerprintOptions): Promise<string>;
 }

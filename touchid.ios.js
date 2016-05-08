@@ -14,13 +14,54 @@ var available = function () {
   });
 };
 
+/**
+ * this 'default' method uses keychain instead of localauth so the passcode fallback can be used
+ */
 var verifyFingerprint = function (arg) {
+  return new Promise(function (resolve, reject) {
+    try {
+
+      if (keychainItemServiceName === null) {
+        var bundleID = NSBundle.mainBundle().infoDictionary.objectForKey("CFBundleIdentifier");
+        keychainItemServiceName = bundleID + ".TouchID";
+      }
+
+      if (!createKeyChainEntry()) {
+        verifyFingerprint(arg);
+      } else {
+        var message = arg !== null && arg.message || "Scan your finger";
+        var query = NSMutableDictionary.alloc().init();
+        query.setObjectForKey(kSecClassGenericPassword, kSecClass);
+        query.setObjectForKey(keychainItemIdentifier, kSecAttrAccount);
+        query.setObjectForKey(keychainItemServiceName, kSecAttrService);
+        query.setObjectForKey(message, kSecUseOperationPrompt);
+
+        // Start the query and the fingerprint scan and/or device passcode validation
+        var res = SecItemCopyMatching(query, null);
+        if (res === 0) { // 0 = ok (match, not canceled)
+          resolve();
+        } else {
+          reject(res);
+        }
+      }
+
+    } catch (ex) {
+      console.log("Error in touchid.verifyFingerprint: " + ex);
+      reject(ex);
+    }
+  });
+};
+
+/**
+ * This implementation uses LocalAuthentication and has no built-in passcode fallback
+ */
+var verifyFingerprintWithCustomFallback = function (arg) {
   return new Promise(function (resolve, reject) {
     try {
       var laContext = LAContext.alloc().init();
       if (laContext.canEvaluatePolicyError(LAPolicyDeviceOwnerAuthenticationWithBiometrics, null)) {
-        var message = arg != null && arg.message || "Scan your finger";
-        if (arg != null && arg.fallbackMessage) {
+        var message = arg !== null && arg.message || "Scan your finger";
+        if (arg !== null && arg.fallbackMessage) {
           laContext.localizedFallbackTitle = arg.fallbackMessage;
         }
         laContext.evaluatePolicyLocalizedReasonReply(
@@ -44,46 +85,6 @@ var verifyFingerprint = function (arg) {
   });
 };
 
-var verifyFingerprintWithPasscodeFallback = function (arg) {
-  return new Promise(function (resolve, reject) {
-    try {
-
-      if (keychainItemServiceName == null) {
-        var bundleID = NSBundle.mainBundle().infoDictionary.objectForKey("CFBundleIdentifier");
-        keychainItemServiceName = bundleID + ".TouchID";
-        console.log("---- keychainItemServiceName " + keychainItemServiceName);
-      }
-
-      if (!createKeyChainEntry()) {
-        console.log("Keychain trouble. Falling back to verifyFingerprintWithCustomPasswordFallback.");
-        verifyFingerprintWithCustomPasswordFallback(arg);
-      } else {
-
-        var message = arg != null && arg.message || "Scan your finger";
-        console.log("message: " + message);
-
-        var query = NSMutableDictionary.alloc().init();
-        query.setObjectForKey(kSecClassGenericPassword, kSecClass);
-        query.setObjectForKey(keychainItemIdentifier, kSecAttrAccount);
-        query.setObjectForKey(keychainItemServiceName, kSecAttrService);
-        query.setObjectForKey(message, kSecUseOperationPrompt);
-
-        console.log("query: " + query);
-
-        // Start the query and the fingerprint scan and/or device passcode validation
-        var res = SecItemCopyMatching(query, null);
-        console.log("res: " + res); // 0 = noErr
-        resolve(res == noErr);
-      }
-      //}
-
-    } catch (ex) {
-      console.log("Error in touchid.verifyFingerprint: " + ex);
-      reject(ex);
-    }
-  });
-};
-
 var createKeyChainEntry = function () {
   var attributes = NSMutableDictionary.alloc().init();
   attributes.setObjectForKey(kSecClassGenericPassword, kSecClass);
@@ -97,7 +98,7 @@ var createKeyChainEntry = function () {
       kSecAccessControlUserPresence,
       null
   );
-  if (accessControlRef == null) {
+  if (accessControlRef === null) {
     console.log("Can't store identifier '" + keychainItemIdentifier + "' in the KeyChain: " + accessControlError + ".");
     return false;
   } else {
@@ -117,4 +118,4 @@ var createKeyChainEntry = function () {
 
 exports.available = available;
 exports.verifyFingerprint = verifyFingerprint;
-exports.verifyFingerprintWithPasscodeFallback = verifyFingerprintWithPasscodeFallback;
+exports.verifyFingerprintWithCustomFallback = verifyFingerprintWithCustomFallback;
