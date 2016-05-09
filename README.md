@@ -63,6 +63,7 @@ Want a nicer guide than these raw code samples? Read [Nic Raboy's blog post abou
 ```
 
 ## Changelog
+- 2.0.0  Added `verifyFingerprintWithCustomFallback`, `verifyFingerprint` now falls back to the passcode.
 - 1.2.0  You can now use the built-in passcode interface as fallback.
 - 1.1.1  Added TypeScript definitions.
 - 1.1.0  Added Android platform which will always return false for `touchid.available`.
