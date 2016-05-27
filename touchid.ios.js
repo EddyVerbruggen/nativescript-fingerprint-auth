@@ -23,26 +23,28 @@ var verifyFingerprint = function (arg) {
 
       if (keychainItemServiceName === null) {
         var bundleID = NSBundle.mainBundle().infoDictionary.objectForKey("CFBundleIdentifier");
+        console.log(bundleID);
         keychainItemServiceName = bundleID + ".TouchID";
       }
 
       if (!createKeyChainEntry()) {
-        verifyFingerprintWithCustomFallback(arg);
-      } else {
-        var message = arg !== null && arg.message || "Scan your finger";
-        var query = NSMutableDictionary.alloc().init();
-        query.setObjectForKey(kSecClassGenericPassword, kSecClass);
-        query.setObjectForKey(keychainItemIdentifier, kSecAttrAccount);
-        query.setObjectForKey(keychainItemServiceName, kSecAttrService);
-        query.setObjectForKey(message, kSecUseOperationPrompt);
+        verifyFingerprintWithCustomFallback(arg).then(resolve, reject);
+        return;
+      }
 
-        // Start the query and the fingerprint scan and/or device passcode validation
-        var res = SecItemCopyMatching(query, null);
-        if (res === 0) { // 0 = ok (match, not canceled)
-          resolve();
-        } else {
-          reject(res);
-        }
+      var message = arg !== null && arg.message || "Scan your finger";
+      var query = NSMutableDictionary.alloc().init();
+      query.setObjectForKey(kSecClassGenericPassword, kSecClass);
+      query.setObjectForKey(keychainItemIdentifier, kSecAttrAccount);
+      query.setObjectForKey(keychainItemServiceName, kSecAttrService);
+      query.setObjectForKey(message, kSecUseOperationPrompt);
+
+      // Start the query and the fingerprint scan and/or device passcode validation
+      var res = SecItemCopyMatching(query, null);
+      if (res === 0) { // 0 = ok (match, not canceled)
+        resolve();
+      } else {
+        reject(res);
       }
 
     } catch (ex) {
