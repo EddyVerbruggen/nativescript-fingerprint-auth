@@ -27,7 +27,7 @@ var verifyFingerprint = function (arg) {
       }
 
       if (!createKeyChainEntry()) {
-        verifyFingerprint(arg);
+        verifyFingerprintWithCustomFallback(arg);
       } else {
         var message = arg !== null && arg.message || "Scan your finger";
         var query = NSMutableDictionary.alloc().init();
