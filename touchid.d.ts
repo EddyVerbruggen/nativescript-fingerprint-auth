@@ -22,14 +22,8 @@ declare module "nativescript-touchid" {
     fallbackMessage?: string;
   }
 
-  /**
-   * Sets text on the clipboard, replacing anything currently on there.
-   */
   export function available(): Promise<boolean>;
-
-  /**
-   * Gets any currently present text from the clipboard.
-   */
+  export function didFingerprintDatabaseChange(): Promise<boolean>;
   export function verifyFingerprint(options: VerifyFingerprintOptions): Promise<string>;
   export function verifyFingerprintWithCustomFallback(options: verifyFingerprintWithCustomFallbackOptions): Promise<string>;
 }

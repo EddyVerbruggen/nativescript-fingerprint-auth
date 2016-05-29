@@ -1,6 +1,6 @@
 {
   "name": "nativescript-touchid",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "A TouchID (fingerprint scanner) module for use in NativeScript apps",
   "main": "touchid.js",
   "nativescript": {

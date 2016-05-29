@@ -4,13 +4,8 @@ exports.available = function () {
   });
 };
 
+// shouldn't be called anyway because 'available' returned false
 exports.verifyFingerprint = function () {
-  return new Promise(function (resolve, reject) {
-    reject("Not available");
-  });
-};
-
-exports.verifyFingerprintWithCustomFallback = function () {
   return new Promise(function (resolve, reject) {
     reject("Not available");
   });

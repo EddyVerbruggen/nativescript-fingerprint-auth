@@ -1,3 +1,5 @@
+var utils = require("utils/utils");
+
 var keychainItemIdentifier = "TouchIDKey";
 var keychainItemServiceName = null;
 
@@ -9,6 +11,46 @@ var available = function () {
               LAPolicyDeviceOwnerAuthenticationWithBiometrics, null));
     } catch (ex) {
       console.log("Error in touchid.available: " + ex);
+      resolve(false);
+    }
+  });
+};
+
+var didFingerprintDatabaseChange = function () {
+  return new Promise(function (resolve, reject) {
+    try {
+      var laContext = LAContext.alloc().init();
+
+      // we expect the dev to have checked 'isAvailable' already so this should not return an error,
+      // we do however need to run canEvaluatePolicy here in order to get a non-nil evaluatedPolicyDomainState
+      if (!laContext.canEvaluatePolicyError(LAPolicyDeviceOwnerAuthenticationWithBiometrics, null)) {
+        reject("Not available");
+        return;
+      }
+
+      // only supported on iOS9+, so check this.. if not supported just report back as false
+      if (utils.ios.MajorVersion < 9) {
+        resolve(false);
+        return;
+      }
+
+      var FingerprintDatabaseStateKey = "FingerprintDatabaseStateKey";
+      var state = laContext.evaluatedPolicyDomainState;
+      if (state !== null) {
+        var stateStr = state.base64EncodedStringWithOptions(0);
+        var storedState = NSUserDefaults.standardUserDefaults().stringForKey(FingerprintDatabaseStateKey);
+
+        // Store enrollment
+        NSUserDefaults.standardUserDefaults().setObjectForKey(stateStr, FingerprintDatabaseStateKey);
+        NSUserDefaults.standardUserDefaults().synchronize();
+
+        // whenever a finger is added/changed/removed the value of the storedState changes,
+        // so compare agains a value we previously stored in the context of this app
+        var changed = storedState !== null && stateStr !== storedState;
+        resolve(changed);
+      }
+    } catch (ex) {
+      console.log("Error in touchid.didFingerprintDatabaseChange: " + ex);
       resolve(false);
     }
   });
@@ -61,25 +103,26 @@ var verifyFingerprintWithCustomFallback = function (arg) {
   return new Promise(function (resolve, reject) {
     try {
       var laContext = LAContext.alloc().init();
-      if (laContext.canEvaluatePolicyError(LAPolicyDeviceOwnerAuthenticationWithBiometrics, null)) {
-        var message = arg !== null && arg.message || "Scan your finger";
-        if (arg !== null && arg.fallbackMessage) {
-          laContext.localizedFallbackTitle = arg.fallbackMessage;
-        }
-        laContext.evaluatePolicyLocalizedReasonReply(
-            LAPolicyDeviceOwnerAuthenticationWithBiometrics,
-            message,
-            function (ok, error) {
-              if (ok) {
-                resolve(ok);
-              } else {
-                reject(error);
-              }
-            }
-        );
-      } else {
+      if (!laContext.canEvaluatePolicyError(LAPolicyDeviceOwnerAuthenticationWithBiometrics, null)) {
         reject("Not available");
+        return;
       }
+
+      var message = arg !== null && arg.message || "Scan your finger";
+      if (arg !== null && arg.fallbackMessage) {
+        laContext.localizedFallbackTitle = arg.fallbackMessage;
+      }
+      laContext.evaluatePolicyLocalizedReasonReply(
+          LAPolicyDeviceOwnerAuthenticationWithBiometrics,
+          message,
+          function (ok, error) {
+            if (ok) {
+              resolve(ok);
+            } else {
+              reject(error);
+            }
+          }
+      );
     } catch (ex) {
       console.log("Error in touchid.verifyFingerprint: " + ex);
       reject(ex);
@@ -119,5 +162,6 @@ var createKeyChainEntry = function () {
 };
 
 exports.available = available;
+exports.didFingerprintDatabaseChange = didFingerprintDatabaseChange;
 exports.verifyFingerprint = verifyFingerprint;
 exports.verifyFingerprintWithCustomFallback = verifyFingerprintWithCustomFallback;
