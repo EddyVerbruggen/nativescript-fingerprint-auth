@@ -62,7 +62,35 @@ Want a nicer guide than these raw code samples? Read [Nic Raboy's blog post abou
   )
 ```
 
+## Security++
+Since iOS9 it's possible to check whether or not the list of enrolled fingerprints changed since
+the last time you checked it. It's recommended you add this check so you can counter hacker attacks
+to your app. See [this article](https://godpraksis.no/2016/03/fingerprint-trojan/) for more details.
+
+So instead of checking the fingerprint after `available` add another check.
+In case `didFingerprintDatabaseChange` returns `true` you probably want to re-authenticate your user
+before accepting valid fingerprints again.
+
+```js
+touchid.available().then(
+    function(avail) {
+      if (avail) {
+        touchid.didFingerprintDatabaseChange().then(
+            function(changed) {
+              if (changed) {
+                // re-auth the user by asking for his credentials before allowing a fingerprint scan again
+              } else {
+                // call the fingerprint scanner
+              }
+            }
+        );
+      }
+    }
+)
+```
+
 ## Changelog
+- 2.1.0  Added `didFingerprintDatabaseChange` for enhanced security.
 - 2.0.0  Added `verifyFingerprintWithCustomFallback`, `verifyFingerprint` now falls back to the passcode.
 - 1.2.0  You can now use the built-in passcode interface as fallback.
 - 1.1.1  Added TypeScript definitions.
