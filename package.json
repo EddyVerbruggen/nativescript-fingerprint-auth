@@ -1,12 +1,12 @@
 {
   "name": "nativescript-touchid",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "A TouchID (fingerprint scanner) module for use in NativeScript apps",
   "main": "touchid.js",
   "nativescript": {
     "platforms": {
-      "android": "1.7.0",
-      "ios": "1.7.0"
+      "android": "2.3.0",
+      "ios": "2.3.0"
     }
   },
   "repository": {
@@ -15,7 +15,9 @@
   },
   "keywords": [
     "NativeScript",
+    "ecosystem:nativescript",
     "TouchID",
+    "Touch ID",
     "Fingerprint",
     "Fingerprint scanner"
   ],

@@ -7,7 +7,7 @@ var available = function () {
   return new Promise(function (resolve, reject) {
     try {
       resolve(
-          LAContext.alloc().init().canEvaluatePolicyError(
+          LAContext.new().canEvaluatePolicyError(
               LAPolicyDeviceOwnerAuthenticationWithBiometrics, null));
     } catch (ex) {
       console.log("Error in touchid.available: " + ex);
@@ -19,7 +19,7 @@ var available = function () {
 var didFingerprintDatabaseChange = function () {
   return new Promise(function (resolve, reject) {
     try {
-      var laContext = LAContext.alloc().init();
+      var laContext = LAContext.new();
 
       // we expect the dev to have checked 'isAvailable' already so this should not return an error,
       // we do however need to run canEvaluatePolicy here in order to get a non-nil evaluatedPolicyDomainState
@@ -38,11 +38,12 @@ var didFingerprintDatabaseChange = function () {
       var state = laContext.evaluatedPolicyDomainState;
       if (state !== null) {
         var stateStr = state.base64EncodedStringWithOptions(0);
-        var storedState = NSUserDefaults.standardUserDefaults().stringForKey(FingerprintDatabaseStateKey);
+        var standardUserDefaults = utils.ios.getter(NSUserDefaults, NSUserDefaults.standardUserDefaults);
+        var storedState = standardUserDefaults.stringForKey(FingerprintDatabaseStateKey);
 
         // Store enrollment
-        NSUserDefaults.standardUserDefaults().setObjectForKey(stateStr, FingerprintDatabaseStateKey);
-        NSUserDefaults.standardUserDefaults().synchronize();
+        standardUserDefaults.setObjectForKey(stateStr, FingerprintDatabaseStateKey);
+        standardUserDefaults.synchronize();
 
         // whenever a finger is added/changed/removed the value of the storedState changes,
         // so compare agains a value we previously stored in the context of this app
@@ -64,8 +65,7 @@ var verifyFingerprint = function (arg) {
     try {
 
       if (keychainItemServiceName === null) {
-        var bundleID = NSBundle.mainBundle().infoDictionary.objectForKey("CFBundleIdentifier");
-        console.log(bundleID);
+        var bundleID = utils.ios.getter(NSBundle, NSBundle.mainBundle).infoDictionary.objectForKey("CFBundleIdentifier");
         keychainItemServiceName = bundleID + ".TouchID";
       }
 
@@ -75,7 +75,7 @@ var verifyFingerprint = function (arg) {
       }
 
       var message = arg !== null && arg.message || "Scan your finger";
-      var query = NSMutableDictionary.alloc().init();
+      var query = NSMutableDictionary.new();
       query.setObjectForKey(kSecClassGenericPassword, kSecClass);
       query.setObjectForKey(keychainItemIdentifier, kSecAttrAccount);
       query.setObjectForKey(keychainItemServiceName, kSecAttrService);
@@ -102,7 +102,7 @@ var verifyFingerprint = function (arg) {
 var verifyFingerprintWithCustomFallback = function (arg) {
   return new Promise(function (resolve, reject) {
     try {
-      var laContext = LAContext.alloc().init();
+      var laContext = LAContext.new();
       if (!laContext.canEvaluatePolicyError(LAPolicyDeviceOwnerAuthenticationWithBiometrics, null)) {
         reject("Not available");
         return;
@@ -131,7 +131,7 @@ var verifyFingerprintWithCustomFallback = function (arg) {
 };
 
 var createKeyChainEntry = function () {
-  var attributes = NSMutableDictionary.alloc().init();
+  var attributes = NSMutableDictionary.new();
   attributes.setObjectForKey(kSecClassGenericPassword, kSecClass);
   attributes.setObjectForKey(keychainItemIdentifier, kSecAttrAccount);
   attributes.setObjectForKey(keychainItemServiceName, kSecAttrService);

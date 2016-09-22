@@ -90,6 +90,7 @@ touchid.available().then(
 ```
 
 ## Changelog
+- 2.1.1  Xcode 8 compatibility - requires NativeScript 2.3.0+.
 - 2.1.0  Added `didFingerprintDatabaseChange` for enhanced security.
 - 2.0.0  Added `verifyFingerprintWithCustomFallback`, `verifyFingerprint` now falls back to the passcode.
 - 1.2.0  You can now use the built-in passcode interface as fallback.
