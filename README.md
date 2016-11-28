@@ -1,30 +1,29 @@
-# NativeScript Touch ID Plugin
-
-Use the iOS fingerprint scanner in your {N} app.
+# NativeScript Fingerprint authentication Plugin
+Formerly known as `nativescript-fingerprint-auth`
 
 <img src="images/fingerprint.png" />
 
 ### Use when
 * You want to know if the device runing your app has enrolled for [Touch ID](https://support.apple.com/en-us/HT201371),
-* You want to leverage the TouchID sensor in your {N} app.
+* You want to leverage a fingerprint scanner in your {N} app.
 
 ## Installation
 From the command prompt go to your app's root folder and execute:
 ```
-tns plugin add nativescript-touchid
+tns plugin add nativescript-fingerprint-auth
 ```
 
 ## Usage
 
-If you want a quickstart, [clone our demo app](https://github.com/EddyVerbruggen/nativescript-touchid-demo).
+If you want a quickstart, [clone our demo app](https://github.com/EddyVerbruggen/nativescript-fingerprint-auth-demo).
 
 Want a nicer guide than these raw code samples? Read [Nic Raboy's blog post about this plugin](https://www.thepolyglotdeveloper.com/2016/03/add-touch-id-authentication-support-to-your-nativescript-app/).
 
 ### function: available
 ```js
-  var touchid = require("nativescript-touchid");
+  var fingerprintAuth = require("nativescript-fingerprint-auth");
 
-  touchid.available().then(
+  fingerprintAuth.available().then(
       function(avail) {
         console.log("Available? " + avail);
       }
@@ -34,9 +33,10 @@ Want a nicer guide than these raw code samples? Read [Nic Raboy's blog post abou
 ### function: verifyFingerprint
 
 ```js
-  touchid.verifyFingerprint({
-    message: 'Scan yer finger', // optional, shown in the fingerprint dialog (default on ios: 'Scan your finger', default on android: 'We are doing this for your own security.').
-    title: 'Android title' // optional title for android,(default: 'Please confirm your credentials.')
+  fingerprintAuth.verifyFingerprint({
+    title: 'Android title', // optional title (used only on Android)
+    message: 'Scan yer finger', // optional (used on both platforms)
+    authenticationValidityDuration: 10 // optional (used on Android, default 0)
   }).then(
       function() {
         console.log("Fingerprint was OK");
@@ -52,7 +52,7 @@ Want a nicer guide than these raw code samples? Read [Nic Raboy's blog post abou
 #### Note: not implemented in android yet
 
 ```js
-  touchid.verifyFingerprintWithCustomFallback({
+  fingerprintAuth.verifyFingerprintWithCustomFallback({
     message: 'Scan yer finger', // optional, shown in the fingerprint dialog (default: 'Scan your finger').
     fallbackMessage: 'Enter PIN' // optional, the button label when scanning fails (default: 'Enter password').
   }).then(
@@ -77,10 +77,10 @@ before accepting valid fingerprints again.
 #### Note: not implemented in android yet
 
 ```js
-touchid.available().then(
+fingerprintAuth.available().then(
     function(avail) {
       if (avail) {
-        touchid.didFingerprintDatabaseChange().then(
+        fingerprintAuth.didFingerprintDatabaseChange().then(
             function(changed) {
               if (changed) {
                 // re-auth the user by asking for his credentials before allowing a fingerprint scan again
@@ -95,6 +95,7 @@ touchid.available().then(
 ```
 
 ## Changelog
+- 3.0.0  Android support added. Renamed `nativescript-touchid` to `nativescript-fingerprint-auth` (sorry for any inconvenience!)
 - 2.1.1  Xcode 8 compatibility - requires NativeScript 2.3.0+.
 - 2.1.0  Added `didFingerprintDatabaseChange` for enhanced security.
 - 2.0.0  Added `verifyFingerprintWithCustomFallback`, `verifyFingerprint` now falls back to the passcode.

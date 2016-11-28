@@ -10,7 +10,7 @@ var available = function () {
           LAContext.new().canEvaluatePolicyError(
               LAPolicyDeviceOwnerAuthenticationWithBiometrics, null));
     } catch (ex) {
-      console.log("Error in touchid.available: " + ex);
+      console.log("Error in fingerprint-auth.available: " + ex);
       resolve(false);
     }
   });
@@ -51,7 +51,7 @@ var didFingerprintDatabaseChange = function () {
         resolve(changed);
       }
     } catch (ex) {
-      console.log("Error in touchid.didFingerprintDatabaseChange: " + ex);
+      console.log("Error in fingerprint-auth.didFingerprintDatabaseChange: " + ex);
       resolve(false);
     }
   });
@@ -90,7 +90,7 @@ var verifyFingerprint = function (arg) {
       }
 
     } catch (ex) {
-      console.log("Error in touchid.verifyFingerprint: " + ex);
+      console.log("Error in fingerprint-auth.verifyFingerprint: " + ex);
       reject(ex);
     }
   });
@@ -124,7 +124,7 @@ var verifyFingerprintWithCustomFallback = function (arg) {
           }
       );
     } catch (ex) {
-      console.log("Error in touchid.verifyFingerprint: " + ex);
+      console.log("Error in fingerprint-auth.verifyFingerprint: " + ex);
       reject(ex);
     }
   });

@@ -1,8 +1,8 @@
 {
-  "name": "nativescript-touchid",
-  "version": "2.1.1",
-  "description": "A TouchID (fingerprint scanner) module for use in NativeScript apps",
-  "main": "touchid.js",
+  "name": "nativescript-fingerprint-auth",
+  "version": "3.0.0",
+  "description": "A fingerprint authentication plugin for use in NativeScript apps",
+  "main": "fingerprint-auth.js",
   "nativescript": {
     "platforms": {
       "android": "2.3.0",
@@ -11,11 +11,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/eddyverbruggen/nativescript-touchid.git"
+    "url": "https://github.com/eddyverbruggen/nativescript-fingerprint-auth.git"
   },
   "keywords": [
     "NativeScript",
     "ecosystem:nativescript",
+    "iOS",
+    "Android",
     "TouchID",
     "Touch ID",
     "Fingerprint",
@@ -28,10 +30,10 @@
   },
   "license": {
     "type": "MIT",
-    "url": "https://github.com/eddyverbruggen/nativescript-touchid/blob/master/LICENSE"
+    "url": "https://github.com/eddyverbruggen/nativescript-fingerprint-auth/blob/master/LICENSE"
   },
   "bugs": {
-    "url": "https://github.com/eddyverbruggen/nativescript-touchid/issues"
+    "url": "https://github.com/eddyverbruggen/nativescript-fingerprint-auth/issues"
   },
-  "homepage": "https://github.com/eddyverbruggen/nativescript-touchid"
+  "homepage": "https://github.com/eddyverbruggen/nativescript-fingerprint-auth"
 }

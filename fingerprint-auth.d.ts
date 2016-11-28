@@ -1,18 +1,17 @@
-declare module "nativescript-touchid" {
+declare module "nativescript-fingerprint-auth" {
 
   export interface VerifyFingerprintOptions {
     /**
-     * The optional message in the fingerprint dialog on ios and page description on android.
-     * Default: 'Scan your finger'.
+     * The optional title in the fingerprint page for android.
+     * Default: whatever the device default is ('Confirm your password' is likely)
      */
-    message?: string;
+    title?: string;
 
     /**
-     * The optional title in the fingerprint page for android.
-     * Default: 'We are doing this for your own security'.
+     * The optional message in the fingerprint dialog on ios and page description on android.
+     * Default: 'Scan your finger' on iOS and the device default on Android (which is likely 'Enter your device password to continue').
      */
-
-    title?: string;
+    message?: string;
   }
 
   export interface verifyFingerprintWithCustomFallbackOptions {
