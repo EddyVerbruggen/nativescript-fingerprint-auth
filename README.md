@@ -35,7 +35,8 @@ Want a nicer guide than these raw code samples? Read [Nic Raboy's blog post abou
 
 ```js
   touchid.verifyFingerprint({
-    message: 'Scan yer finger' // optional, shown in the fingerprint dialog (default: 'Scan your finger').
+    message: 'Scan yer finger', // optional, shown in the fingerprint dialog (default on ios: 'Scan your finger', default on android: 'We are doing this for your own security.').
+    title: 'Android title' // optional title for android,(default: 'Please confirm your credentials.')
   }).then(
       function() {
         console.log("Fingerprint was OK");
@@ -47,6 +48,8 @@ Want a nicer guide than these raw code samples? Read [Nic Raboy's blog post abou
 ```
 
 ### function: verifyFingerprintWithCustomFallback
+
+#### Note: not implemented in android yet
 
 ```js
   touchid.verifyFingerprintWithCustomFallback({
@@ -70,6 +73,8 @@ to your app. See [this article](https://godpraksis.no/2016/03/fingerprint-trojan
 So instead of checking the fingerprint after `available` add another check.
 In case `didFingerprintDatabaseChange` returns `true` you probably want to re-authenticate your user
 before accepting valid fingerprints again.
+
+#### Note: not implemented in android yet
 
 ```js
 touchid.available().then(

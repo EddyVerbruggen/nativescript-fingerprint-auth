@@ -26,6 +26,9 @@ var activity = null;
 
 var keyguardManager = null;
 
+var title = null;
+var message = null;
+
 var available = function () {
   return new Promise(function (resolve, reject) {
 
@@ -64,6 +67,10 @@ var didFingerprintDatabaseChange = function () {
 
 
 var verifyFingerprint = function (arg) {
+  if(arg){
+    if(arg.title) title = arg.title;
+    if(arg.message) message = arg.message;
+  }
   return new Promise(function (resolve, reject) {
     activity = app.android.foregroundActivity;
     try {
@@ -141,8 +148,6 @@ function tryEncrypt() {
     var keyStore = KeyStore.getInstance('AndroidKeyStore');
     keyStore.load(null);
     var secretKey = keyStore.getKey(KEY_NAME, null);
-    console.log('passei aqui!');
-    console.log(secretKey);
 
     var cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" +
                                     KeyProperties.BLOCK_MODE_CBC + "/" +
@@ -153,7 +158,6 @@ function tryEncrypt() {
     
     return true;
   } catch (error) {
-    console.log('asdasd');
     if ((error.nativeException + '').indexOf('android.security.keystore.UserNotAuthenticatedException') > -1) {
       // the user must provide their credentials in order to proceed
       showAuthenticationScreen();
@@ -174,9 +178,10 @@ function tryEncrypt() {
 function showAuthenticationScreen() {
   // title and description are optional, if you want the defaults,
   // you must pass nulls to the factory function
-  var title = 'Please confirm your credentials.';
-  var description = 'We are doing this for your own security.';
-  var intent = keyguardManager.createConfirmDeviceCredentialIntent(title, description);
+
+  if(title === null) title = 'Please confirm your credentials.';
+  if(message === null) message = 'We are doing this for your own security.';
+  var intent = keyguardManager.createConfirmDeviceCredentialIntent(title, message);
 
   if (intent != null) {
     activity.startActivityForResult(intent, REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS);
