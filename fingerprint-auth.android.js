@@ -89,14 +89,7 @@ var verifyFingerprint = function (arg) {
 
 
 var verifyFingerprintWithCustomFallback = function (arg) {
-  return new Promise(function (resolve, reject) {
-    try {
-      resolve('Not implemented');
-    } catch (ex) {
-      console.log("Error in verifyFingerprint: " + ex);
-      reject(ex);
-    }
-  });
+  return verifyFingerprint(arg);
 };
 
 /**

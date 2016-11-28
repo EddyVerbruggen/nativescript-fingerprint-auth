@@ -30,6 +30,15 @@ declare module "nativescript-fingerprint-auth" {
 
   export function available(): Promise<boolean>;
   export function didFingerprintDatabaseChange(): Promise<boolean>;
+
+  /**
+   * This (recommended) method uses keychain instead of localauth so the passcode fallback can be used.
+   */
   export function verifyFingerprint(options: VerifyFingerprintOptions): Promise<string>;
+
+  /**
+   * This implementation uses LocalAuthentication and has no built-in passcode fallback on iOS.
+   * On Android this is exactly the same as 'verifyFingerprint'
+   */
   export function verifyFingerprintWithCustomFallback(options: verifyFingerprintWithCustomFallbackOptions): Promise<string>;
 }
