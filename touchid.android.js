@@ -36,11 +36,21 @@ var available = function () {
         return;
     }
 
-    if (ActivityCompat.checkSelfPermission(utils.ad.getApplicationContext(), Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
-        console.log('Permission not granted');
-        resolve(false);
-        return;
-    }
+     if (android.os.Build.VERSION.SDK_INT >= 23) { //23 == android.os.BUILD.M
+          //Fingerprint API only available on from Android 6.0 (M)
+          var fingerprintManager = utils.ad.getApplicationContext().getSystemService("fingerprint");
+          if (!fingerprintManager.isHardwareDetected()) { 
+              // Device doesn't support fingerprint authentication
+              reject('Device doesn\'t support fingerprint authentication');     
+          } else if (!fingerprintManager.hasEnrolledFingerprints()) { 
+              // User hasn't enrolled any fingerprints to authenticate with 
+              reject('User hasn\'t enrolled any fingerprints to authenticate with');    
+          } else { 
+              resolve(true);
+          }
+      }else{
+          reject('Your api version don\'t support fingerprint auth');
+      }
     
     resolve(true);
   });
