@@ -1,5 +1,5 @@
 # NativeScript Fingerprint authentication Plugin
-Formerly known as `nativescript-fingerprint-auth`
+Formerly known as [`nativescript-touchid`](https://github.com/EddyVerbruggen/nativescript-fingerprint-auth/tree/nativescript-touchid)
 
 <img src="images/fingerprint.png" />
 
