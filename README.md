@@ -1,6 +1,8 @@
 # NativeScript Touch ID Plugin
 
-Use the iOS fingerprint scanner in your {N} app.
+
+> Deprecated! Use `nativescript-fingerprint-auth` from now on (which has Android support!)
+
 
 <img src="images/fingerprint.png" />
 
