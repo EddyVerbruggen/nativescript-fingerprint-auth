@@ -2,7 +2,7 @@
   "name": "nativescript-fingerprint-auth",
   "version": "3.0.0",
   "description": "A fingerprint authentication plugin for use in NativeScript apps",
-  "main": "fingerprint-auth.js",
+  "main": "fingerprint-auth",
   "nativescript": {
     "platforms": {
       "android": "2.3.0",
