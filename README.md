@@ -24,8 +24,7 @@ tns plugin add nativescript-fingerprint-auth
 ## Demo
 If you want a quickstart, [check out the demo app](https://github.com/EddyVerbruggen/nativescript-fingerprint-auth/tree/master/demo).
 
-<img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-fingerprint-auth/master/media/ios-demo-01.png" width="200px" /> <img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-fingerprint-auth/master/media/ios-demo-02.png" width="200px" /> <img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-fingerprint-auth/master/media/ios-demo-03.png" width="200px" />
-<img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-fingerprint-auth/master/media/ios-demo-04.png" width="200px" /> <img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-fingerprint-auth/master/media/ios-demo-05.png" width="200px" />
+<img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-fingerprint-auth/master/media/ios-demo-01.png" width="200px" /> <img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-fingerprint-auth/master/media/ios-demo-02.png" width="200px" /> <img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-fingerprint-auth/master/media/ios-demo-03.png" width="200px" /> <img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-fingerprint-auth/master/media/ios-demo-04.png" width="200px" /> <img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-fingerprint-auth/master/media/ios-demo-05.png" width="200px" />
 
 ## API
 Want a nicer guide than these raw code samples? Read [Nic Raboy's blog post about this plugin](https://www.thepolyglotdeveloper.com/2016/03/add-touch-id-authentication-support-to-your-nativescript-app/).
@@ -112,17 +111,19 @@ before accepting valid fingerprints again.
 ```js
 fingerprintAuth.available().then(
     function(avail) {
-      if (avail) {
-        fingerprintAuth.didFingerprintDatabaseChange().then(
-            function(changed) {
-              if (changed) {
-                // re-auth the user by asking for his credentials before allowing a fingerprint scan again
-              } else {
-                // call the fingerprint scanner
-              }
-            }
-        );
+      if (!avail) {
+        return;
       }
+
+      fingerprintAuth.didFingerprintDatabaseChange().then(
+          function(changed) {
+            if (changed) {
+              // re-auth the user by asking for his credentials before allowing a fingerprint scan again
+            } else {
+              // call the fingerprint scanner
+            }
+          }
+      );
     }
 )
 ```
