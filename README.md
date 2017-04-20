@@ -24,11 +24,7 @@ tns plugin add nativescript-fingerprint-auth
 ## Demo
 If you want a quickstart, [check out the demo app](https://github.com/EddyVerbruggen/nativescript-fingerprint-auth/tree/master/demo).
 
-<img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-fingerprint-auth/master/media/ios-demo-01.png" width="200px" />
-<img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-fingerprint-auth/master/media/ios-demo-02.png" width="200px" />
-<img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-fingerprint-auth/master/media/ios-demo-03.png" width="200px" />
-<img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-fingerprint-auth/master/media/ios-demo-04.png" width="200px" />
-<img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-fingerprint-auth/master/media/ios-demo-05.png" width="200px" />
+<img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-fingerprint-auth/master/media/ios-demo-01.png" width="200px" /> <img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-fingerprint-auth/master/media/ios-demo-02.png" width="200px" /> <img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-fingerprint-auth/master/media/ios-demo-03.png" width="200px" /> <img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-fingerprint-auth/master/media/ios-demo-04.png" width="200px" /> <img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-fingerprint-auth/master/media/ios-demo-05.png" width="200px" />
 
 ## API
 Want a nicer guide than these raw code samples? Read [Nic Raboy's blog post about this plugin](https://www.thepolyglotdeveloper.com/2016/03/add-touch-id-authentication-support-to-your-nativescript-app/).
