@@ -1,0 +1,59 @@
+{
+  "name": "nativescript-fingerprint-auth",
+  "version": "4.0.0",
+  "description": "A fingerprint authentication plugin for use in NativeScript apps",
+  "main": "fingerprint-auth",
+  "nativescript": {
+    "platforms": {
+      "android": "2.5.0",
+      "ios": "2.5.0"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "demo.ios": "npm run preparedemo && cd ../demo && tns run ios --emulator",
+    "demo.ios.device": "npm run preparedemo && cd ../demo && tns platform remove ios && tns run ios",
+    "demo.android": "npm run preparedemo && cd ../demo && tns platform remove android && tns run android --justlaunch",
+    "test": "npm run tslint && npm run tslint.demo && cd ../demo && tns build ios && tns build android",
+    "test.ios": "cd ../demo && tns platform remove ios && tns test ios --emulator",
+    "test.ios.device": "cd ../demo && tns platform remove ios && tns test ios",
+    "test.android": "cd ../demo && tns platform remove android && tns test android --justlaunch",
+    "preparedemo": "npm run build && cd ../demo && tns plugin remove nativescript-fingerprint-auth && tns plugin add ../src && tns install",
+    "setup": "npm i && cd ../demo && npm i && cd ../src && npm run build",
+    "setupandinstall": "npm i && cd ../demo && npm i && cd ../src && npm run build && cd ../demo && tns plugin add ../src && cd ../src",
+    "tslint": "tslint *.ts",
+    "tslint.demo": "tslint ../demo/app/*.ts",
+    "prepublish": "npm run build",
+    "development.setup": "npm run setup && npm link && cd ../demo && npm link nativescript-fingerprint-auth && cd ../src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eddyverbruggen/nativescript-fingerprint-auth.git"
+  },
+  "keywords": [
+    "NativeScript",
+    "ecosystem:nativescript",
+    "iOS",
+    "Android",
+    "TouchID",
+    "Touch ID",
+    "Fingerprint",
+    "Fingerprint scanner"
+  ],
+  "author": {
+    "name": "Eddy Verbruggen",
+    "email": "eddyverbruggen@gmail.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/eddyverbruggen/nativescript-fingerprint-auth/issues"
+  },
+  "homepage": "https://github.com/eddyverbruggen/nativescript-fingerprint-auth",
+  "readmeFilename": "README.md",
+  "devDependencies": {
+    "tns-core-modules": "^2.5.1",
+    "tns-platform-declarations": "^2.5.0",
+    "typescript": "^2.1.0",
+    "tslint": "^5.0.0"
+  }
+}

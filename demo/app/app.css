@@ -1,0 +1,32 @@
+﻿page {
+  background-color: #F4F4F4;
+}
+
+.tab-content {
+  color: #808080;
+  padding: 20;
+}
+
+.title {
+  font-size: 18;
+  margin: 0 0 10 0;
+  color: #3c3c3c;
+}
+
+label {
+  font-size: 14;
+}
+
+button {
+  background-color: #3598db;
+  padding: 8 0;
+  margin: 10;
+  margin-bottom: 20;
+  font-size: 16;
+  border-radius: 4;
+}
+
+.button {
+  /* don't add this class to 'button' above since it will make 'alert/actionsheet' buttons white as well */
+  color: #ffffff;
+}
