@@ -35,5 +35,6 @@ before_script:
 script:
     - cd src
     - npm run setup
-    - npm run demo.android
-    - npm run test.android
+    - npm run tslint
+    - cd ../demo
+    - tns build android
