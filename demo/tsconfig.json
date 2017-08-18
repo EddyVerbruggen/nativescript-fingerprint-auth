@@ -8,7 +8,9 @@
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "lib": [
-            "es2016"
+            "es6",
+            "dom",
+            "es2015.iterable"
         ],
         "pretty": true,
         "allowUnreachableCode": false,
