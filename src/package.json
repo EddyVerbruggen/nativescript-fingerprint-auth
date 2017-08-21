@@ -1,6 +1,6 @@
 {
   "name": "nativescript-fingerprint-auth",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "A fingerprint authentication plugin for use in NativeScript apps",
   "main": "fingerprint-auth",
   "nativescript": {

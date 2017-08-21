@@ -44,7 +44,7 @@ fingerprintAuth.available().then(
 ```
 
 #### TypeScript
-```js
+```typescript
 import { FingerprintAuth } from "nativescript-fingerprint-auth";
 
 class MyClass {
@@ -54,11 +54,12 @@ class MyClass {
     this.fingerprintAuth = new FingerprintAuth();
   }
 
-  this.fingerprintAuth.available().then(
+  this.fingerprintAuth.available()
+    .then(
       (avail: boolean) => {
         console.log(`Available? ${avail}`);
-      });
-  );
+      }
+    );
 }
 ```
 
@@ -129,6 +130,7 @@ fingerprintAuth.available().then(
 ```
 
 ## Changelog
+- 4.0.1  Aligned with [the official NativeScript plugin seed](https://github.com/NativeScript/nativescript-plugin-seed). Requires NativeScript 3.0.0+. Thanks, @angeltsvetkov!
 - 4.0.0  Converted to TypeScript. Changed the error response type of `verifyFingerprintWithCustomFallback`.
 - 3.0.0  Android support added. Renamed `nativescript-touchid` to `nativescript-fingerprint-auth` (sorry for any inconvenience!).
 - 2.1.1  Xcode 8 compatibility - requires NativeScript 2.3.0+.
