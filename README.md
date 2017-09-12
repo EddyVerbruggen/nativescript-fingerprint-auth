@@ -1,6 +1,6 @@
 # NativeScript Fingerprint Authentication
 
-> Also works with Face ID on Apple X 🚀
+> Also works with Face ID on iPhone X 🚀
 
 [![Build Status][build-status]][build-url]
 [![NPM version][npm-image]][npm-url]
