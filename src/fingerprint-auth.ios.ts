@@ -1,24 +1,36 @@
 import * as utils from "tns-core-modules/utils/utils";
 import {
+  BiometricIDAvailableResult,
   FingerprintAuthApi,
   VerifyFingerprintOptions,
   VerifyFingerprintWithCustomFallbackOptions
 } from "./fingerprint-auth.common";
+
+declare const LABiometryTypeTouchID, LABiometryTypeFaceID: any;
 
 const keychainItemIdentifier = "TouchIDKey";
 let keychainItemServiceName = null;
 
 export class FingerprintAuth implements FingerprintAuthApi {
 
-  available(): Promise<boolean> {
+  available(): Promise<BiometricIDAvailableResult> {
     return new Promise((resolve, reject) => {
       try {
-        resolve(
-            LAContext.new().canEvaluatePolicyError(
-                LAPolicy.DeviceOwnerAuthenticationWithBiometrics));
+        const laContext = LAContext.new();
+        const hasBio = laContext.canEvaluatePolicyError(LAPolicy.DeviceOwnerAuthenticationWithBiometrics);
+
+        resolve({
+          any: hasBio,
+          touch: hasBio && laContext.biometryType === LABiometryTypeTouchID,
+          face: hasBio && laContext.biometryType === LABiometryTypeFaceID,
+        });
+
       } catch (ex) {
         console.log(`fingerprint-auth.available: ${ex}`);
-        resolve(false);
+        // if no identities are enrolled, there will be an exception (so not using 'reject' here)
+        resolve({
+          any: false
+        });
       }
     });
   }
@@ -67,7 +79,7 @@ export class FingerprintAuth implements FingerprintAuthApi {
   /**
    * this 'default' method uses keychain instead of localauth so the passcode fallback can be used
    */
-  verifyFingerprint(options: VerifyFingerprintOptions): Promise<string> {
+  verifyFingerprint(options: VerifyFingerprintOptions): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
         if (keychainItemServiceName === null) {
@@ -84,6 +96,8 @@ export class FingerprintAuth implements FingerprintAuthApi {
         query.setObjectForKey(kSecClassGenericPassword, kSecClass);
         query.setObjectForKey(keychainItemIdentifier, kSecAttrAccount);
         query.setObjectForKey(keychainItemServiceName, kSecAttrService);
+
+        // Note that you can only do this for Touch ID; for Face ID you need to tweak the plist value of NSFaceIDUsageDescription
         query.setObjectForKey(options !== null && options.message || "Scan your finger", kSecUseOperationPrompt);
 
         // Start the query and the fingerprint scan and/or device passcode validation
@@ -104,7 +118,7 @@ export class FingerprintAuth implements FingerprintAuthApi {
   /**
    * This implementation uses LocalAuthentication and has no built-in passcode fallback
    */
-  verifyFingerprintWithCustomFallback(options: VerifyFingerprintWithCustomFallbackOptions): Promise<string> {
+  verifyFingerprintWithCustomFallback(options: VerifyFingerprintWithCustomFallbackOptions): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
         const laContext = LAContext.new();
@@ -122,7 +136,7 @@ export class FingerprintAuth implements FingerprintAuthApi {
             message,
             (ok, error) => {
               if (ok) {
-                resolve(ok);
+                resolve();
               } else {
                 reject({
                   code: error.code,

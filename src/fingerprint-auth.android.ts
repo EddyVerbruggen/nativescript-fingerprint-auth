@@ -1,6 +1,7 @@
 import * as app from "tns-core-modules/application";
 import * as utils from "tns-core-modules/utils/utils";
 import {
+  BiometricIDAvailableResult,
   FingerprintAuthApi,
   VerifyFingerprintOptions,
   VerifyFingerprintWithCustomFallbackOptions
@@ -19,18 +20,20 @@ const SECRET_BYTE_ARRAY = Array.create("byte", 16);
 const REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS = 1;
 
 export class FingerprintAuth implements FingerprintAuthApi {
-
   private keyguardManager: any;
 
   constructor() {
     this.keyguardManager = utils.ad.getApplicationContext().getSystemService("keyguard");
   }
 
-  available(): Promise<boolean> {
+  // TODO can we detect face on the Samsung S8?
+  available(): Promise<BiometricIDAvailableResult> {
     return new Promise((resolve, reject) => {
       try {
         if (!this.keyguardManager || !this.keyguardManager.isKeyguardSecure()) {
-          resolve(false);
+          resolve({
+            any: false
+          });
           return;
         }
 
@@ -44,16 +47,17 @@ export class FingerprintAuth implements FingerprintAuthApi {
             // User hasn't enrolled any fingerprints to authenticate with
             reject(`User hasn't enrolled any fingerprints to authenticate with`);
           } else {
-            resolve(true);
+            resolve({
+              any: true,
+              touch: true
+            });
           }
         } else {
           reject(`Your api version doesn't support fingerprint authentication`);
         }
-
-        resolve(true);
       } catch (ex) {
         console.log(`fingerprint-auth.available: ${ex}`);
-        resolve(false);
+        reject(ex);
       }
     });
   }
@@ -65,14 +69,20 @@ export class FingerprintAuth implements FingerprintAuthApi {
     });
   }
 
-  verifyFingerprint(options: VerifyFingerprintOptions): Promise<string> {
+  verifyFingerprint(options: VerifyFingerprintOptions): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
         app.android.foregroundActivity.onActivityResult = function onActivityResult(requestCode, resultCode, data) {
+          console.log(">>> onActivityResult 1: " + requestCode);
           if (requestCode === REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS) {
+            console.log(">>> onActivityResult 2: " + resultCode);
+            console.log(">>> android.app.Activity.RESULT_OK: " + android.app.Activity.RESULT_OK);
             if (resultCode === android.app.Activity.RESULT_OK) {
               // the user has just authenticated via the ConfirmDeviceCredential activity
-              resolve('Congrats! You have just been authenticated successfully!');
+              resolve({
+                any: true,
+                touch: true
+              });
             } else {
               // the user has quit the activity without providing credentials
               reject('The last authentication attempt was cancelled.');
@@ -89,8 +99,13 @@ export class FingerprintAuth implements FingerprintAuthApi {
 
         FingerprintAuth.createKey(options);
 
-        if (this.tryEncrypt(options)) {
-          resolve(true);
+        const tryEncryptResult: boolean = this.tryEncrypt(options);
+        if (tryEncryptResult === undefined) {
+          // this one is async
+        } else if (tryEncryptResult === true) {
+          resolve();
+        } else {
+          reject();
         }
       } catch (ex) {
         console.log(`Error in fingerprint-auth.verifyFingerprint: ${ex}`);
@@ -99,7 +114,7 @@ export class FingerprintAuth implements FingerprintAuthApi {
     });
   }
 
-  verifyFingerprintWithCustomFallback(options: VerifyFingerprintWithCustomFallbackOptions): Promise<string> {
+  verifyFingerprintWithCustomFallback(options: VerifyFingerprintWithCustomFallbackOptions): Promise<any> {
     return this.verifyFingerprint(options);
   }
 
@@ -146,6 +161,7 @@ export class FingerprintAuth implements FingerprintAuthApi {
       if ((`${error.nativeException}`).indexOf('android.security.keystore.UserNotAuthenticatedException') > -1) {
         // the user must provide their credentials in order to proceed
         this.showAuthenticationScreen(options);
+        return undefined;
       } else if ((`${error.nativeException}`).indexOf('android.security.keystore.KeyPermanentlyInvalidatedException') > -1) {
         // Invalid fingerprint
         console.log(error);

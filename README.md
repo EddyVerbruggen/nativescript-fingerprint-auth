@@ -47,7 +47,7 @@ fingerprintAuth.available().then(
 
 #### TypeScript
 ```typescript
-import { FingerprintAuth } from "nativescript-fingerprint-auth";
+import { FingerprintAuth, BiometricIDAvailableResult } from "nativescript-fingerprint-auth";
 
 class MyClass {
   private fingerprintAuth: FingerprintAuth;
@@ -56,12 +56,11 @@ class MyClass {
     this.fingerprintAuth = new FingerprintAuth();
   }
 
-  this.fingerprintAuth.available()
-    .then(
-      (avail: boolean) => {
-        console.log(`Available? ${avail}`);
-      }
-    );
+  this.fingerprintAuth.available().then((result: BiometricIDAvailableResult) => {
+    console.log(`Biometric ID available? ${result.any}`);
+    console.log(`Touch? ${result.touch}`);
+    console.log(`Face? ${result.face}`);
+  });
 }
 ```
 
@@ -71,7 +70,7 @@ Note that on the iOS simulator this will just `resolve()`.
 ```js
 fingerprintAuth.verifyFingerprint({
   title: 'Android title', // optional title (used only on Android)
-  message: 'Scan yer finger', // optional (used on both platforms)
+  message: 'Scan yer finger', // optional (used on both platforms) - for FaceID on iOS see the notes about NSFaceIDUsageDescription 
   authenticationValidityDuration: 10 // optional (used on Android, default 0)
 }).then(
     function() {
@@ -102,6 +101,17 @@ fingerprintAuth.verifyFingerprintWithCustomFallback({
 )
 ```
 
+## Face ID (iOS)
+iOS 11 added support for Face ID and was first supported by the iPhone X.
+The developer needs to provide a value for `NSFaceIDUsageDescription`, otherwise your app may crash.
+
+You can provide this value (the reason for using Face ID) by adding something like this to `app/App_Resources/ios/Info.plist`:
+
+```xml
+  <key>NSFaceIDUsageDescription</key>
+  <string>For easy authentication with our app.</string>
+``` 
+ 
 ## Security++ (iOS)
 Since iOS9 it's possible to check whether or not the list of enrolled fingerprints changed since
 the last time you checked it. It's recommended you add this check so you can counter hacker attacks
@@ -132,6 +142,7 @@ fingerprintAuth.available().then(
 ```
 
 ## Changelog
+- 5.0.0  Better `Face ID` support. Breaking change, see the API for `available`.
 - 4.0.1  Aligned with [the official NativeScript plugin seed](https://github.com/NativeScript/nativescript-plugin-seed). Requires NativeScript 3.0.0+. Thanks, @angeltsvetkov!
 - 4.0.0  Converted to TypeScript. Changed the error response type of `verifyFingerprintWithCustomFallback`.
 - 3.0.0  Android support added. Renamed `nativescript-touchid` to `nativescript-fingerprint-auth` (sorry for any inconvenience!).

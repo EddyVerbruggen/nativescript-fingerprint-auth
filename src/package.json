@@ -1,6 +1,6 @@
 {
   "name": "nativescript-fingerprint-auth",
-  "version": "4.0.1",
+  "version": "5.0.0",
   "description": "A fingerprint authentication plugin for use in NativeScript apps",
   "main": "fingerprint-auth",
   "nativescript": {
@@ -38,8 +38,11 @@
     "Android",
     "TouchID",
     "Touch ID",
+    "FaceID",
     "Fingerprint",
-    "Fingerprint scanner"
+    "Fingerprint scanner",
+    "Face ID",
+    "Face scanner"
   ],
   "author": {
     "name": "Eddy Verbruggen",
@@ -52,9 +55,9 @@
   "homepage": "https://github.com/eddyverbruggen/nativescript-fingerprint-auth",
   "readmeFilename": "README.md",
   "devDependencies": {
-    "tns-core-modules": "^3.0.0",
-    "tns-platform-declarations": "^3.0.0",
-    "typescript": "~2.2.2",
+    "tns-core-modules": "^3.3.0",
+    "tns-platform-declarations": "^3.3.0",
+    "typescript": "~2.4.0",
     "tslint": "^5.0.0"
   }
 }

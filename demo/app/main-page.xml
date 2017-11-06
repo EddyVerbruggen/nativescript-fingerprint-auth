@@ -9,11 +9,11 @@
             <Label text="Checking availability" class="title"/>
             <Button text="available?" tap="{{ doCheckAvailable }}" class="button" />
 
-            <Label text="Detect changes in the device fingerprint database. For best security you want to have the user reauth whenever this method returns true." textWrap="true"/>
-            <Button text="Fingerprints changed?" tap="{{ doCheckFingerprintsChanged }}" class="button" />
+            <Label text="Detect changes in the device biometric database. For best security you want to have the user reauth whenever this method returns true." textWrap="true"/>
+            <Button text="Biometric ID changed?" tap="{{ doCheckFingerprintsChanged }}" class="button" />
 
-            <Label text="Scanning the fingerprint" class="title"/>
-            <Label text="When scanning a finger fails or is not possible, you can either use the built-in passcode fallback or handle it yourself (custom fallback)." textWrap="true"/>
+            <Label text="Scanning the fingerprint / face" class="title"/>
+            <Label text="When scanning fails or is not possible, you can either use the built-in passcode fallback or handle it yourself (custom fallback)." textWrap="true"/>
             <Button text="verify with passcode fallback" tap="{{ doVerifyFingerprint }}" class="button" />
             <Button text="verify with custom fallback" tap="{{ doVerifyFingerprintWithCustomFallback }}" class="button" />
           </StackLayout>
@@ -25,7 +25,7 @@
         <StackLayout class="tab-content">
           <Image margin="10" src="~/res/telerik-logo.png" />
           <Label text="Fingerprint Auth plugin demo" class="title"/>
-          <Label text="The Fingerprint Auth allows you to use the fingerprint scanner of your mobile device." textWrap="true"/>
+          <Label text="The Fingerprint Auth allows you to use the fingerprint / face scanner of your mobile device." textWrap="true"/>
           <Label text=" "/><!-- poor mans line break, lol -->
           <Label text="With this plugin you can replace traditional password / pincode login forms by a convenient and secure biometric authentication mechanism." textWrap="true"/>
         </StackLayout>

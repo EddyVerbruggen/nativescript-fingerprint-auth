@@ -12,6 +12,7 @@ demo/*.d.ts
 src/*.d.ts
 !src/index.d.ts
 !src/references.d.ts
+demo/package-lock.json
 demo/lib
 demo/platforms
 node_modules

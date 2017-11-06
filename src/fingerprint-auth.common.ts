@@ -26,18 +26,25 @@ export interface VerifyFingerprintWithCustomFallbackOptions {
   fallbackMessage?: string;
 }
 
+export interface BiometricIDAvailableResult {
+  any: boolean;
+  touch?: boolean;
+  face?: boolean;
+}
+
 //noinspection JSUnusedGlobalSymbols
 export interface FingerprintAuthApi {
-  available(): Promise<boolean>;
+  available(): Promise<BiometricIDAvailableResult>;
+
   didFingerprintDatabaseChange(): Promise<boolean>;
   /**
    * This (recommended) method uses keychain instead of localauth so the passcode fallback can be used.
    */
-  verifyFingerprint(options: VerifyFingerprintOptions): Promise<string>;
+  verifyFingerprint(options: VerifyFingerprintOptions): Promise<any>;
 
   /**
    * This implementation uses LocalAuthentication and has no built-in passcode fallback on iOS.
    * On Android this is exactly the same as 'verifyFingerprint'
    */
-  verifyFingerprintWithCustomFallback(options: VerifyFingerprintWithCustomFallbackOptions): Promise<string>;
+  verifyFingerprintWithCustomFallback(options: VerifyFingerprintWithCustomFallbackOptions): Promise<any>;
 }

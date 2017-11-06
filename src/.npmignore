@@ -2,4 +2,5 @@
 *.ts
 !*.d.ts
 tsconfig.json
+package-lock.json
 references.d.ts
