@@ -10,6 +10,12 @@ export interface VerifyFingerprintOptions {
    * Default: 'Scan your finger' on iOS and the device default on Android (which is likely 'Enter your device password to continue').
    */
   message?: string;
+
+  /**
+   * Default 5 (seconds). Can be 0  to always trigger auth.
+   * Android only.
+   */
+  authenticationValidityDuration?: number;
 }
 
 export interface VerifyFingerprintWithCustomFallbackOptions {
@@ -24,6 +30,12 @@ export interface VerifyFingerprintWithCustomFallbackOptions {
    * Default: 'Enter password'.
    */
   fallbackMessage?: string;
+
+  /**
+   * Default 5 (seconds). Can be 0  to always trigger auth.
+   * Android only.
+   */
+  authenticationValidityDuration?: number;
 }
 
 export interface BiometricIDAvailableResult {

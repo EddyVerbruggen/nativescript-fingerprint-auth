@@ -17,7 +17,7 @@ const KeyGenParameterSpec = android.security.keystore.KeyGenParameterSpec;
 
 const KEY_NAME = "fingerprintauth";
 const SECRET_BYTE_ARRAY = Array.create("byte", 16);
-const REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS = 1;
+const REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS = 788; // arbitrary
 
 export class FingerprintAuth implements FingerprintAuthApi {
   private keyguardManager: any;
@@ -72,12 +72,9 @@ export class FingerprintAuth implements FingerprintAuthApi {
   verifyFingerprint(options: VerifyFingerprintOptions): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-        app.android.foregroundActivity.onActivityResult = function onActivityResult(requestCode, resultCode, data) {
-          console.log(">>> onActivityResult 1: " + requestCode);
+        app.android.foregroundActivity.onActivityResult = (requestCode, resultCode, data) => {
           if (requestCode === REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS) {
-            console.log(">>> onActivityResult 2: " + resultCode);
-            console.log(">>> android.app.Activity.RESULT_OK: " + android.app.Activity.RESULT_OK);
-            if (resultCode === android.app.Activity.RESULT_OK) {
+            if (resultCode === android.app.Activity.RESULT_OK) { // OK = -1
               // the user has just authenticated via the ConfirmDeviceCredential activity
               resolve({
                 any: true,
@@ -132,7 +129,7 @@ export class FingerprintAuth implements FingerprintAuthApi {
           new KeyGenParameterSpec.Builder(KEY_NAME, KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
               .setBlockModes([KeyProperties.BLOCK_MODE_CBC])
               .setUserAuthenticationRequired(true)
-              .setUserAuthenticationValidityDurationSeconds(options && options.authenticationValidityDuration ? options.authenticationValidityDuration : 0)
+              .setUserAuthenticationValidityDurationSeconds(options && options.authenticationValidityDuration ? options.authenticationValidityDuration : 5)
               .setEncryptionPaddings([KeyProperties.ENCRYPTION_PADDING_PKCS7])
               .build()
       );

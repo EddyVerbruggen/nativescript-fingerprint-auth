@@ -31,7 +31,8 @@ export class HelloWorldModel extends Observable {
 
   public doVerifyFingerprint(): void {
     this.fingerprintAuth.verifyFingerprint({
-      message: 'Scan yer finger' // optional
+      message: 'Scan yer finger', // optional
+      authenticationValidityDuration: 10 // Android
     }).then(
       () => {
         alert({
@@ -51,7 +52,8 @@ export class HelloWorldModel extends Observable {
   public doVerifyFingerprintWithCustomFallback(): void {
     this.fingerprintAuth.verifyFingerprintWithCustomFallback({
       message: 'Scan yer finger', // optional
-      fallbackMessage: 'Enter PIN' // optional
+      fallbackMessage: 'Enter PIN', // optional
+      authenticationValidityDuration: 10 // Android
     }).then(
       () => {
         alert({

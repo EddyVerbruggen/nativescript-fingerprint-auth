@@ -71,7 +71,7 @@ Note that on the iOS simulator this will just `resolve()`.
 fingerprintAuth.verifyFingerprint({
   title: 'Android title', // optional title (used only on Android)
   message: 'Scan yer finger', // optional (used on both platforms) - for FaceID on iOS see the notes about NSFaceIDUsageDescription 
-  authenticationValidityDuration: 10 // optional (used on Android, default 0)
+  authenticationValidityDuration: 10 // optional (used on Android, default 5)
 }).then(
     function() {
       console.log("Fingerprint was OK");
@@ -89,7 +89,8 @@ Just show that when the error callback is invoked.
 ```js
 fingerprintAuth.verifyFingerprintWithCustomFallback({
   message: 'Scan yer finger', // optional, shown in the fingerprint dialog (default: 'Scan your finger').
-  fallbackMessage: 'Enter PIN' // optional, the button label when scanning fails (default: 'Enter password').
+  fallbackMessage: 'Enter PIN', // optional, the button label when scanning fails (default: 'Enter password').
+  authenticationValidityDuration: 10 // optional (used on Android, default 5)
 }).then(
     function() {
       console.log("Fingerprint was OK");
