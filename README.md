@@ -1,6 +1,7 @@
 # NativeScript Fingerprint Authentication
 
 > Also works with Face ID on iPhone X 🚀
+> Requires Xcode 9+, iOS 11 SDK
 
 [![Build Status][build-status]][build-url]
 [![NPM version][npm-image]][npm-url]
