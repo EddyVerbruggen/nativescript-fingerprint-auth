@@ -35,12 +35,14 @@ export class HelloWorldModel extends Observable {
       authenticationValidityDuration: 10 // Android
     }).then(
       () => {
+        this.set('status', "Biometric ID OK");
         alert({
           title: "Biometric ID / passcode OK",
           okButtonText: "Sweet"
         });
       },
-      () => {
+      err => {
+        this.set('status', "Biometric ID NOT OK: " + err);
         alert({
           title: "Biometric ID NOT OK / canceled",
           okButtonText: "Mmkay"
@@ -56,12 +58,14 @@ export class HelloWorldModel extends Observable {
       authenticationValidityDuration: 10 // Android
     }).then(
       () => {
+        this.set('status', "Biometric ID OK");
         alert({
           title: "Biometric ID OK",
           okButtonText: "Sweet"
         });
       },
-      (error) => {
+      error => {
+        this.set('status', "Biometric ID NOT OK: " + JSON.stringify(error));
         alert({
           title: "Biometric ID NOT OK",
           message: (error.code === -3 ? "Show custom fallback" : error.message),
