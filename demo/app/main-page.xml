@@ -5,7 +5,7 @@
       <TabViewItem.view>
         <ScrollView>
           <StackLayout class="tab-content">
-            <Label text="{{ status }}" class="title" style="text-align: center; "/>
+            <Label text="{{ status }}" class="status" textWrap="true" style="text-align: center" width="100%"/>
             <Label text="Checking availability" class="title"/>
             <Button text="available?" tap="{{ doCheckAvailable }}" class="button" />
 
