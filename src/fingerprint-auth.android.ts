@@ -1,13 +1,13 @@
 import * as app from "tns-core-modules/application";
 import * as utils from "tns-core-modules/utils/utils";
 import {
-  BiometricIDAvailableResult,
+  BiometricIDAvailableResult, ERROR_CODES,
   FingerprintAuthApi,
   VerifyFingerprintOptions,
   VerifyFingerprintWithCustomFallbackOptions
 } from "./fingerprint-auth.common";
 
-declare const android: any;
+declare const android, com: any;
 
 const KeyStore = java.security.KeyStore;
 const Cipher = javax.crypto.Cipher;
@@ -21,6 +21,7 @@ const REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS = 788; // arbitrary
 
 export class FingerprintAuth implements FingerprintAuthApi {
   private keyguardManager: any;
+  private fingerPrintManager: any;
 
   constructor() {
     this.keyguardManager = utils.ad.getApplicationContext().getSystemService("keyguard");
@@ -65,48 +66,129 @@ export class FingerprintAuth implements FingerprintAuthApi {
   didFingerprintDatabaseChange(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       // not implemented for Android
+      // TODO should be possible..
       resolve(false);
     });
+  }
+
+  private verifyWithCustomAndroidUI(resolve, reject, authenticationCallback) {
+    this.fingerPrintManager.authenticate(
+        authenticationCallback,
+        app.android.foregroundActivity.getSupportFragmentManager());
   }
 
   verifyFingerprint(options: VerifyFingerprintOptions): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-        app.android.foregroundActivity.onActivityResult = (requestCode, resultCode, data) => {
-          if (requestCode === REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS) {
-            if (resultCode === android.app.Activity.RESULT_OK) { // OK = -1
-              // the user has just authenticated via the ConfirmDeviceCredential activity
-              resolve({
-                any: true,
-                touch: true
-              });
-            } else {
-              // the user has quit the activity without providing credentials
-              reject('The last authentication attempt was cancelled.');
-            }
+        // in case 'activity.getSupportFragmentManager' is available ({N} started supporting it,
+        // or the user added our Activity to their Android manifest), use the 3rd party FP library
+        const hasSupportFragment = app.android.foregroundActivity.getSupportFragmentManager !== undefined;
+
+        if (options.useCustomAndroidUI && !hasSupportFragment) {
+          reject({
+            code: ERROR_CODES.DEVELOPER_ERROR,
+            message: "Custom Fingerprint UI requires changes to AndroidManifest.xml. See the nativescript-fingerprint-auth documentation."
+          });
+
+        } else if (options.useCustomAndroidUI && hasSupportFragment) {
+          if (!this.fingerPrintManager) {
+            this.fingerPrintManager = new com.jesusm.kfingerprintmanager.KFingerprintManager(utils.ad.getApplicationContext(), KEY_NAME);
           }
-        };
+          const that = this;
+          const callback = new com.jesusm.kfingerprintmanager.KFingerprintManager.AuthenticationCallback({
+            attempts: 0,
+            onAuthenticationFailedWithHelp(help): void {
+              if (++this.attempts < 3) {
+                // just invoke the UI again as it's very sensitive (need a timeout to prevent an infinite loop)
+                setTimeout(() => that.verifyWithCustomAndroidUI(resolve, reject, this), 50);
+              } else {
+                reject({
+                  code: ERROR_CODES.RECOVERABLE_ERROR,
+                  message: help
+                });
+              }
+            },
+            onAuthenticationSuccess(): void {
+              resolve();
+            },
+            onSuccessWithManualPassword(password): void {
+              resolve();
+            },
+            onFingerprintNotRecognized(): void {
+              if (++this.attempts < 3) {
+                // just invoke the UI again as it's very sensitive (need a timeout to prevent an infinite loop)
+                setTimeout(() => that.verifyWithCustomAndroidUI(resolve, reject, this), 50);
+              } else {
+                reject({
+                  code: ERROR_CODES.NOT_RECOGNIZED,
+                  message: "Fingerprint not recognized."
+                });
+              }
+            },
+            onFingerprintNotAvailable(): void {
+              reject({
+                code: ERROR_CODES.NOT_CONFIGURED,
+                message: "Secure lock screen hasn't been set up.\n Go to \"Settings -> Security -> Screenlock\" to set up a lock screen."
+              });
+            },
+            onCancelled(): void {
+              reject({
+                code: ERROR_CODES.PASSWORD_FALLBACK_SELECTED,
+                message: "Cancelled by user"
+              });
+            }
+          });
+          this.verifyWithCustomAndroidUI(resolve, reject, callback);
 
-        if (!this.keyguardManager) {
-          reject('Sorry, your device does not support keyguardManager.');
-        }
-        if (this.keyguardManager && !this.keyguardManager.isKeyguardSecure()) {
-          reject('Secure lock screen hasn\'t been set up.\n Go to "Settings -> Security -> Screenlock" to set up a lock screen.');
-        }
-
-        FingerprintAuth.createKey(options);
-
-        const tryEncryptResult: boolean = this.tryEncrypt(options);
-        if (tryEncryptResult === undefined) {
-          // this one is async
-        } else if (tryEncryptResult === true) {
-          resolve();
         } else {
-          reject();
+          app.android.foregroundActivity.onActivityResult = (requestCode, resultCode, data) => {
+            if (requestCode === REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS) {
+              if (resultCode === android.app.Activity.RESULT_OK) { // OK = -1
+                // the user has just authenticated via the ConfirmDeviceCredential activity
+                resolve();
+              } else {
+                // the user has quit the activity without providing credentials
+                reject({
+                  code: ERROR_CODES.USER_CANCELLED,
+                  message: "User cancelled."
+                });
+              }
+            }
+          };
+
+          if (!this.keyguardManager) {
+            reject({
+              code: ERROR_CODES.NOT_AVAILABLE,
+              message: "Keyguard manager not available."
+            });
+          }
+          if (this.keyguardManager && !this.keyguardManager.isKeyguardSecure()) {
+            reject({
+              code: ERROR_CODES.NOT_CONFIGURED,
+              message: "Secure lock screen hasn't been set up.\n Go to \"Settings -> Security -> Screenlock\" to set up a lock screen."
+            });
+          }
+
+          FingerprintAuth.createKey(options);
+
+          const tryEncryptResult: boolean = this.tryEncrypt(options);
+          if (tryEncryptResult === undefined) {
+            // this one is async
+          } else if (tryEncryptResult === true) {
+            resolve();
+          } else {
+            reject({
+              code: ERROR_CODES.UNEXPECTED_ERROR,
+              message: "See the console for error logs."
+            });
+          }
         }
       } catch (ex) {
         console.log(`Error in fingerprint-auth.verifyFingerprint: ${ex}`);
-        reject(ex);
+        reject({
+          code: ERROR_CODES.UNEXPECTED_ERROR,
+          message: ex
+        });
       }
     });
   }

@@ -5,7 +5,7 @@
       <TabViewItem.view>
         <ScrollView>
           <StackLayout class="tab-content">
-            <Label text="{{ status }}" class="status" textWrap="true" style="text-align: center" width="100%"/>
+            <Label text="{{ status }}" class="status" textWrap="true" style="text-align: center"/>
             <Label text="Checking availability" class="title"/>
             <Button text="available?" tap="{{ doCheckAvailable }}" class="button" />
 
@@ -15,7 +15,13 @@
             <Label text="Scanning the fingerprint / face" class="title"/>
             <Label text="When scanning fails or is not possible, you can either use the built-in passcode fallback or handle it yourself (custom fallback)." textWrap="true"/>
             <Button text="verify with passcode fallback" tap="{{ doVerifyFingerprint }}" class="button" />
-            <Button text="verify with custom fallback" tap="{{ doVerifyFingerprintWithCustomFallback }}" class="button" />
+            <iOS>
+              <Button text="verify with custom fallback" tap="{{ doVerifyFingerprintWithCustomFallback }}" class="button" />
+            </iOS>
+            <Android>
+              <Label text="Note that this will fail if you previously cancelled authentication with the button above. Try reinstalling the app if funny things happen." textWrap="true"/>
+              <Button text="verify with custom UI" tap="{{ doVerifyFingerprintWithCustomUI }}" class="button" />
+            </Android>
           </StackLayout>
         </ScrollView>
       </TabViewItem.view>

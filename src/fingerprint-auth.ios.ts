@@ -79,7 +79,7 @@ export class FingerprintAuth implements FingerprintAuthApi {
   /**
    * this 'default' method uses keychain instead of localauth so the passcode fallback can be used
    */
-  verifyFingerprint(options: VerifyFingerprintOptions): Promise<any> {
+  verifyFingerprint(options: VerifyFingerprintOptions): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
         if (keychainItemServiceName === null) {
@@ -118,7 +118,7 @@ export class FingerprintAuth implements FingerprintAuthApi {
   /**
    * This implementation uses LocalAuthentication and has no built-in passcode fallback
    */
-  verifyFingerprintWithCustomFallback(options: VerifyFingerprintWithCustomFallbackOptions): Promise<any> {
+  verifyFingerprintWithCustomFallback(options: VerifyFingerprintWithCustomFallbackOptions): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
         const laContext = LAContext.new();

@@ -69,19 +69,29 @@ class MyClass {
 Note that on the iOS simulator this will just `resolve()`.
 
 ```js
-fingerprintAuth.verifyFingerprint({
-  title: 'Android title', // optional title (used only on Android)
-  message: 'Scan yer finger', // optional (used on both platforms) - for FaceID on iOS see the notes about NSFaceIDUsageDescription 
-  authenticationValidityDuration: 10 // optional (used on Android, default 5)
-}).then(
-    function() {
-      console.log("Fingerprint was OK");
-    },
-    function() {
-      console.log("Fingerprint NOT OK");
-    }
-)
+fingerprintAuth.verifyFingerprint(
+	{
+	  title: 'Android title', // optional title (used only on Android)
+	  message: 'Scan yer finger', // optional (used on both platforms) - for FaceID on iOS see the notes about NSFaceIDUsageDescription
+	  authenticationValidityDuration: 10, // optional (used on Android, default 5)
+	  useCustomAndroidUI: false // set to true to use a different authentication screen (see below)
+	})
+	.then(() => console.log("Biometric ID OK"))
+	.catch(err => console.log(`Biometric ID NOT OK: ${JSON.stringify(err)}`));
 ```
+
+#### A nicer UX/UI on Android (`useCustomAndroidUI: true`)
+The default authentication screen on Android is a standalone screen that (depending on the exact Android version) looks kinda 'uninteresting'. So with version 6.0.0 this plugin added the ability to override the default screen and offer an iOS popover style which you can activate by passing in `useCustomAndroidUI: true` in the function above.
+
+##### Mandatory change
+To be able to use this screen, a change to `App_Resources/Android/AndroidManifest.xml` is required as our NativeScript activity needs to extend AppCompatActivity (note that in the future this may become the default for NativeScript apps).
+
+To do so, open the file and replace `<activity android:name="com.tns.NativeScriptActivity"` by `<activity android:name="org.nativescript.fingerprintplugin.AppCompatActivity"`.
+
+Note that if you forget this and set `useCustomAndroidUI: true` the plugin will `reject` the Promise with a relevant error message.
+
+##### Optional change
+If you want to override the default texts of this popover screen, then drop a file `App_Resources/Android/values/strings.xml` in your project and override the properties you like. See the demo app for an example.
 
 ### `verifyFingerprintWithCustomFallback` (iOS only, falls back to `verifyFingerprint` on Android)
 Instead of falling back to the default Passcode UI of iOS you can roll your own.

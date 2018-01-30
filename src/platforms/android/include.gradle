@@ -1,0 +1,15 @@
+android {
+	productFlavors {
+		"nativescript-fpauth" {
+			dimension "nativescript-fpauth"
+		}
+	}
+}
+
+repositories {
+	maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+	compile 'com.github.JesusM:FingerprintManager:v2.0.2'
+}

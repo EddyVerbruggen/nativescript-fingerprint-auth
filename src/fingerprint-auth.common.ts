@@ -1,3 +1,14 @@
+export enum ERROR_CODES {
+  PASSWORD_FALLBACK_SELECTED = -3, // historically this is what iOS uses, so using that as well
+  DEVELOPER_ERROR = 10,
+  NOT_AVAILABLE = 20,
+  NOT_CONFIGURED = 30,
+  NOT_RECOGNIZED = 40,
+  RECOVERABLE_ERROR = 50,
+  USER_CANCELLED = 60,
+  UNEXPECTED_ERROR = 70
+}
+
 export interface VerifyFingerprintOptions {
   /**
    * The optional title in the fingerprint page for android.
@@ -16,6 +27,13 @@ export interface VerifyFingerprintOptions {
    * Android only.
    */
   authenticationValidityDuration?: number;
+
+  /**
+   * On Android you can either use our fancy proprietary UI or the stock UI Android ships with.
+   * Default false (so use the default UI).
+   * Android only.
+   */
+  useCustomAndroidUI?: boolean;
 }
 
 export interface VerifyFingerprintWithCustomFallbackOptions {
@@ -52,11 +70,11 @@ export interface FingerprintAuthApi {
   /**
    * This (recommended) method uses keychain instead of localauth so the passcode fallback can be used.
    */
-  verifyFingerprint(options: VerifyFingerprintOptions): Promise<any>;
+  verifyFingerprint(options: VerifyFingerprintOptions): Promise<void>;
 
   /**
    * This implementation uses LocalAuthentication and has no built-in passcode fallback on iOS.
    * On Android this is exactly the same as 'verifyFingerprint'
    */
-  verifyFingerprintWithCustomFallback(options: VerifyFingerprintWithCustomFallbackOptions): Promise<any>;
+  verifyFingerprintWithCustomFallback(options: VerifyFingerprintWithCustomFallbackOptions): Promise<void>;
 }
