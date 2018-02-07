@@ -133,27 +133,23 @@ So instead of checking the fingerprint after `available` add another check.
 In case `didFingerprintDatabaseChange` returns `true` you probably want to re-authenticate your user
 before accepting valid fingerprints again.
 
-```js
-fingerprintAuth.available().then(
-    function(avail) {
-      if (!avail) {
-        return;
-      }
-
-      fingerprintAuth.didFingerprintDatabaseChange().then(
-          function(changed) {
-            if (changed) {
-              // re-auth the user by asking for his credentials before allowing a fingerprint scan again
-            } else {
-              // call the fingerprint scanner
-            }
-          }
-      );
+```typescript
+fingerprintAuth.available().then(avail => {
+    if (!avail) {
+      return;
     }
-)
+    fingerprintAuth.didFingerprintDatabaseChange().then(changed => {
+        if (changed) {
+          // re-auth the user by asking for his credentials before allowing a fingerprint scan again
+        } else {
+          // call the fingerprint scanner
+        }
+  });
+});
 ```
 
 ## Changelog
+- 6.0.0  Allow custom UI on Android.
 - 5.0.0  Better `Face ID` support. Breaking change, see the API for `available`.
 - 4.0.1  Aligned with [the official NativeScript plugin seed](https://github.com/NativeScript/nativescript-plugin-seed). Requires NativeScript 3.0.0+. Thanks, @angeltsvetkov!
 - 4.0.0  Converted to TypeScript. Changed the error response type of `verifyFingerprintWithCustomFallback`.
