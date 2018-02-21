@@ -38,23 +38,24 @@ export class FingerprintAuth implements FingerprintAuthApi {
           return;
         }
 
-        if (android.os.Build.VERSION.SDK_INT >= 23) { // 23 == android.os.BUILD.M
-          // Fingerprint API only available on from Android 6.0 (M)
-          const fingerprintManager = utils.ad.getApplicationContext().getSystemService("fingerprint");
-          if (!fingerprintManager.isHardwareDetected()) {
-            // Device doesn't support fingerprint authentication
-            reject(`Device doesn't support fingerprint authentication`);
-          } else if (!fingerprintManager.hasEnrolledFingerprints()) {
-            // User hasn't enrolled any fingerprints to authenticate with
-            reject(`User hasn't enrolled any fingerprints to authenticate with`);
-          } else {
-            resolve({
-              any: true,
-              touch: true
-            });
-          }
-        } else {
+        // The fingerprint API is only available from Android 6.0 (M, Api level 23)
+        if (android.os.Build.VERSION.SDK_INT < 23) {
           reject(`Your api version doesn't support fingerprint authentication`);
+          return;
+        }
+
+        const fingerprintManager = utils.ad.getApplicationContext().getSystemService("fingerprint");
+        if (!fingerprintManager.isHardwareDetected()) {
+          // Device doesn't support fingerprint authentication
+          reject(`Device doesn't support fingerprint authentication`);
+        } else if (!fingerprintManager.hasEnrolledFingerprints()) {
+          // User hasn't enrolled any fingerprints to authenticate with
+          reject(`User hasn't enrolled any fingerprints to authenticate with`);
+        } else {
+          resolve({
+            any: true,
+            touch: true
+          });
         }
       } catch (ex) {
         console.log(`fingerprint-auth.available: ${ex}`);
@@ -74,7 +75,7 @@ export class FingerprintAuth implements FingerprintAuthApi {
   private verifyWithCustomAndroidUI(resolve, reject, authenticationCallback) {
     this.fingerPrintManager.authenticate(
         authenticationCallback,
-        app.android.foregroundActivity.getSupportFragmentManager());
+        this.getActivity().getSupportFragmentManager());
   }
 
   verifyFingerprint(options: VerifyFingerprintOptions): Promise<any> {
@@ -82,7 +83,7 @@ export class FingerprintAuth implements FingerprintAuthApi {
       try {
         // in case 'activity.getSupportFragmentManager' is available ({N} started supporting it,
         // or the user added our Activity to their Android manifest), use the 3rd party FP library
-        const hasSupportFragment = app.android.foregroundActivity.getSupportFragmentManager !== undefined;
+        const hasSupportFragment = this.getActivity().getSupportFragmentManager !== undefined;
 
         if (options.useCustomAndroidUI && !hasSupportFragment) {
           reject({
@@ -141,7 +142,7 @@ export class FingerprintAuth implements FingerprintAuthApi {
           this.verifyWithCustomAndroidUI(resolve, reject, callback);
 
         } else {
-          app.android.foregroundActivity.onActivityResult = (requestCode, resultCode, data) => {
+          this.getActivity().onActivityResult = (requestCode, resultCode, data) => {
             if (requestCode === REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS) {
               if (resultCode === android.app.Activity.RESULT_OK) { // OK = -1
                 // the user has just authenticated via the ConfirmDeviceCredential activity
@@ -260,8 +261,12 @@ export class FingerprintAuth implements FingerprintAuthApi {
         options && options.message ? options.message : null
     );
     if (intent !== null) {
-      app.android.foregroundActivity.startActivityForResult(intent, REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS);
+      this.getActivity().startActivityForResult(intent, REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS);
     }
+  }
+
+  private getActivity(): any /* android.app.Activity */ {
+    return app.android.foregroundActivity || app.android.startActivity;
   }
 }
 

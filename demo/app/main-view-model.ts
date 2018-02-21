@@ -4,7 +4,7 @@ import { FingerprintAuth, BiometricIDAvailableResult } from "nativescript-finger
 
 export class HelloWorldModel extends Observable {
   private fingerprintAuth: FingerprintAuth;
-  public status: string = "Tap a button..";
+  public status: string = "Tap a button below..";
 
   constructor() {
     super();
@@ -12,10 +12,15 @@ export class HelloWorldModel extends Observable {
   }
 
   public doCheckAvailable(): void {
-    this.fingerprintAuth.available().then(
-        (result: BiometricIDAvailableResult) => {
-          console.log("available result: " + JSON.stringify(result));
-          this.set('status', "Biometric ID available? - " + (result.any ? (result.face ? "Face" : "Touch") : "NO"));
+    this.fingerprintAuth.available()
+        .then(
+            (result: BiometricIDAvailableResult) => {
+              console.log("doCheckAvailable result: " + JSON.stringify(result));
+              this.set('status', "Biometric ID available? - " + (result.any ? (result.face ? "Face" : "Touch") : "NO"));
+            })
+        .catch(err => {
+          console.log("doCheckAvailable error: " + err);
+          this.set('status', "Error: " + err);
         });
   }
 

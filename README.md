@@ -47,6 +47,7 @@ fingerprintAuth.available().then(
 ```
 
 #### TypeScript
+
 ```typescript
 import { FingerprintAuth, BiometricIDAvailableResult } from "nativescript-fingerprint-auth";
 
@@ -68,7 +69,7 @@ class MyClass {
 ### `verifyFingerprint`
 Note that on the iOS simulator this will just `resolve()`.
 
-```js
+```typescript
 fingerprintAuth.verifyFingerprint(
 	{
 	  title: 'Android title', // optional title (used only on Android)
@@ -81,7 +82,8 @@ fingerprintAuth.verifyFingerprint(
 ```
 
 #### A nicer UX/UI on Android (`useCustomAndroidUI: true`)
-The default authentication screen on Android is a standalone screen that (depending on the exact Android version) looks kinda 'uninteresting'. So with version 6.0.0 this plugin added the ability to override the default screen and offer an iOS popover style which you can activate by passing in `useCustomAndroidUI: true` in the function above.
+The default authentication screen on Android is a standalone screen that (depending on the exact Android version) looks kinda 'uninteresting'.
+So with version 6.0.0 this plugin added the ability to override the default screen and offer an iOS popover style which you can activate by passing in `useCustomAndroidUI: true` in the function above.
 
 ##### Mandatory change
 To be able to use this screen, a change to `App_Resources/Android/AndroidManifest.xml` is required as our NativeScript activity needs to extend AppCompatActivity (note that in the future this may become the default for NativeScript apps).
@@ -97,20 +99,20 @@ If you want to override the default texts of this popover screen, then drop a fi
 Instead of falling back to the default Passcode UI of iOS you can roll your own.
 Just show that when the error callback is invoked.
 
-```js
+```typescript
 fingerprintAuth.verifyFingerprintWithCustomFallback({
   message: 'Scan yer finger', // optional, shown in the fingerprint dialog (default: 'Scan your finger').
   fallbackMessage: 'Enter PIN', // optional, the button label when scanning fails (default: 'Enter password').
   authenticationValidityDuration: 10 // optional (used on Android, default 5)
 }).then(
-    function() {
+    () => {
       console.log("Fingerprint was OK");
     },
-    function(error) {
+    error => {
       // when error.code === -3, the user pressed the button labeled with your fallbackMessage
       console.log("Fingerprint NOT OK. Error code: " + error.code + ". Error message: " + error.message);
     }
-)
+);
 ```
 
 ## Face ID (iOS)
@@ -149,6 +151,7 @@ fingerprintAuth.available().then(avail => {
 ```
 
 ## Changelog
+- 6.0.1  Fixed a compatibility issues with NativeScript 3.4.
 - 6.0.0  Allow custom UI on Android.
 - 5.0.0  Better `Face ID` support. Breaking change, see the API for `available`.
 - 4.0.1  Aligned with [the official NativeScript plugin seed](https://github.com/NativeScript/nativescript-plugin-seed). Requires NativeScript 3.0.0+. Thanks, @angeltsvetkov!
