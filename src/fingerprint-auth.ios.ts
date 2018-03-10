@@ -19,8 +19,8 @@ export class FingerprintAuth implements FingerprintAuthApi {
 
         resolve({
           any: hasBio,
-          touch: hasBio && laContext.biometryType == 1, // LABiometryType.TypeTouchID,
-          face: hasBio && laContext.biometryType == 2, // LABiometryType.TypeFaceID,
+          touch: hasBio && laContext.biometryType === 1, // LABiometryType.TypeTouchID,
+          face: hasBio && laContext.biometryType === 2, // LABiometryType.TypeFaceID,
         });
 
       } catch (ex) {
