@@ -6,8 +6,6 @@ import {
   VerifyFingerprintWithCustomFallbackOptions
 } from "./fingerprint-auth.common";
 
-declare const LABiometryTypeTouchID, LABiometryTypeFaceID: any;
-
 const keychainItemIdentifier = "TouchIDKey";
 let keychainItemServiceName = null;
 
@@ -21,8 +19,8 @@ export class FingerprintAuth implements FingerprintAuthApi {
 
         resolve({
           any: hasBio,
-          touch: hasBio && laContext.biometryType === LABiometryTypeTouchID,
-          face: hasBio && laContext.biometryType === LABiometryTypeFaceID,
+          touch: hasBio && laContext.biometryType == 1, // LABiometryType.TypeTouchID,
+          face: hasBio && laContext.biometryType == 2, // LABiometryType.TypeFaceID,
         });
 
       } catch (ex) {
