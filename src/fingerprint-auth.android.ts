@@ -1,5 +1,6 @@
 import * as app from "tns-core-modules/application";
 import * as utils from "tns-core-modules/utils/utils";
+import { AndroidActivityResultEventData } from "tns-core-modules/application";
 import {
   BiometricIDAvailableResult, ERROR_CODES,
   FingerprintAuthApi,
@@ -142,9 +143,10 @@ export class FingerprintAuth implements FingerprintAuthApi {
           this.verifyWithCustomAndroidUI(resolve, reject, callback);
 
         } else {
-          this.getActivity().onActivityResult = (requestCode, resultCode, data) => {
-            if (requestCode === REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS) {
-              if (resultCode === android.app.Activity.RESULT_OK) { // OK = -1
+
+          const onActivityResult = (data: AndroidActivityResultEventData) => {
+            if (data.requestCode === REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS) {
+              if (data.resultCode === android.app.Activity.RESULT_OK) { // OK = -1
                 // the user has just authenticated via the ConfirmDeviceCredential activity
                 resolve();
               } else {
@@ -155,7 +157,10 @@ export class FingerprintAuth implements FingerprintAuthApi {
                 });
               }
             }
+            app.android.off(app.AndroidApplication.activityResultEvent, onActivityResult);
           };
+
+          app.android.on(app.AndroidApplication.activityResultEvent, onActivityResult);
 
           if (!this.keyguardManager) {
             reject({
