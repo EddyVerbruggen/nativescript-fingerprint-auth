@@ -9,6 +9,15 @@
       "ios": "2.5.0"
     }
   },
+  "snapshot": {
+    "android": {
+      "tns-java-classes": {
+        "modules": [
+          "nativescript-fingerprint-auth/appcompat-activity"
+        ]
+      }
+    }
+  },
   "scripts": {
     "build": "npm i && tsc",
     "demo.ios": "npm run preparedemo && cd ../demo && tns run ios --emulator",
