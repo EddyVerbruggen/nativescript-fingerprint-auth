@@ -5,6 +5,7 @@ import { FingerprintAuth, BiometricIDAvailableResult } from "nativescript-finger
 export class HelloWorldModel extends Observable {
   private fingerprintAuth: FingerprintAuth;
   public status: string = "Tap a button below..";
+  private static CONFIGURED_PASSWORD = "MyPassword";
 
   constructor() {
     super();
@@ -58,7 +59,18 @@ export class HelloWorldModel extends Observable {
           message: 'Scan yer finger', // optional
           useCustomAndroidUI: true // Android
         })
-        .then(() => this.set('status', "Biometric ID OK"))
+        .then((enteredPassword?: string) => {
+          if (enteredPassword === undefined) {
+            this.set('status', "Biometric ID OK");
+          } else {
+            // compare enteredPassword to the one the user previously configured for your app (which is not the users system password!)
+            if (enteredPassword === HelloWorldModel.CONFIGURED_PASSWORD) {
+              this.set('status', "Biometric ID OK, using password");
+            } else {
+              this.set('status', `Wrong password. Try '${HelloWorldModel.CONFIGURED_PASSWORD}' 😉`);
+            }
+          }
+        })
         .catch(err => this.set('status', `Biometric ID NOT OK: " + ${JSON.stringify(err)}`));
   }
 

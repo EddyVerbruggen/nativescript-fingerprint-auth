@@ -77,7 +77,7 @@ export class FingerprintAuth implements FingerprintAuthApi {
   /**
    * this 'default' method uses keychain instead of localauth so the passcode fallback can be used
    */
-  verifyFingerprint(options: VerifyFingerprintOptions): Promise<void> {
+  verifyFingerprint(options: VerifyFingerprintOptions): Promise<void | string> {
     return new Promise((resolve, reject) => {
       try {
         if (keychainItemServiceName === null) {

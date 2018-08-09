@@ -79,7 +79,7 @@ export class FingerprintAuth implements FingerprintAuthApi {
         this.getActivity().getSupportFragmentManager());
   }
 
-  verifyFingerprint(options: VerifyFingerprintOptions): Promise<any> {
+  verifyFingerprint(options: VerifyFingerprintOptions): Promise<void | string> {
     return new Promise((resolve, reject) => {
       try {
         // in case 'activity.getSupportFragmentManager' is available ({N} started supporting it,
@@ -114,7 +114,7 @@ export class FingerprintAuth implements FingerprintAuthApi {
               resolve();
             },
             onSuccessWithManualPassword(password): void {
-              resolve();
+              resolve(password);
             },
             onFingerprintNotRecognized(): void {
               if (++this.attempts < 3) {

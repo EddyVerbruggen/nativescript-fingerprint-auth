@@ -24,6 +24,16 @@ From the command prompt go to your app's root folder and execute:
 tns plugin add nativescript-fingerprint-auth
 ```
 
+Then open `App_Resources/Android/AndroidManifest.xml` and look for `minSdkVersion`.
+If that's set to a version less than 23, add this `overrideLibrary` line:
+
+```xml
+  <uses-sdk
+      android:minSdkVersion="17"
+      android:targetSdkVersion="__APILEVEL__"
+      tools:overrideLibrary="com.jesusm.kfingerprintmanager"/>
+```
+
 ## Demo
 If you want a quickstart, [check out the demo app](https://github.com/EddyVerbruggen/nativescript-fingerprint-auth/tree/master/demo).
 
@@ -77,13 +87,22 @@ fingerprintAuth.verifyFingerprint(
 	  authenticationValidityDuration: 10, // optional (used on Android, default 5)
 	  useCustomAndroidUI: false // set to true to use a different authentication screen (see below)
 	})
-	.then(() => console.log("Biometric ID OK"))
+	.then((enteredPassword?: string) => {
+	  if (enteredPassword === undefined) {
+	    console.log("Biometric ID OK")
+	  } else {
+	    // compare enteredPassword to the one the user previously configured for your app (which is not the users system password!)
+	  }
+	})
 	.catch(err => console.log(`Biometric ID NOT OK: ${JSON.stringify(err)}`));
 ```
 
 #### A nicer UX/UI on Android (`useCustomAndroidUI: true`)
 The default authentication screen on Android is a standalone screen that (depending on the exact Android version) looks kinda 'uninteresting'.
 So with version 6.0.0 this plugin added the ability to override the default screen and offer an iOS popover style which you can activate by passing in `useCustomAndroidUI: true` in the function above.
+
+One important thing to realize is that the 'use password' option in this dialog doesn't verify the entered password against
+the system password. It must be used to compare the entered password with an app-specific password the user previously configured.
 
 ##### Mandatory change
 To be able to use this screen, a change to `App_Resources/Android/AndroidManifest.xml` is required as our NativeScript activity needs to extend AppCompatActivity (note that in the future this may become the default for NativeScript apps).

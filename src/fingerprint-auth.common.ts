@@ -69,8 +69,10 @@ export interface FingerprintAuthApi {
   didFingerprintDatabaseChange(): Promise<boolean>;
   /**
    * This (recommended) method uses keychain instead of localauth so the passcode fallback can be used.
+   * On Android, when 'useCustomAndroidUI' is set to 'true', and the user opted for manually entering the password,
+   * this method may return a string (the entered password) for you to compare to the actual password.
    */
-  verifyFingerprint(options: VerifyFingerprintOptions): Promise<void>;
+  verifyFingerprint(options: VerifyFingerprintOptions): Promise<void | string>;
 
   /**
    * This implementation uses LocalAuthentication and has no built-in passcode fallback on iOS.

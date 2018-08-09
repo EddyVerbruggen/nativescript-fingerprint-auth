@@ -1,9 +1,4 @@
 android {
-	productFlavors {
-		"nativescript-fpauth" {
-			dimension "nativescript-fpauth"
-		}
-	}
 }
 
 repositories {
