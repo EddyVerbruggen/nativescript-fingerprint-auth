@@ -159,7 +159,7 @@ export class FingerprintAuth implements FingerprintAuthApi {
     const accessControlRef = SecAccessControlCreateWithFlags(
         kCFAllocatorDefault,
         kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
-        SecAccessControlCreateFlags.kSecAccessControlUserPresence,
+        2, // either SecAccessControlCreateFlags.kSecAccessControlBiometryAny (iOS 11.3+), or SecAccessControlCreateFlags.kSecAccessControlTouchIDAny (iOS < 11.3)
         null
     );
     if (accessControlRef === null) {
