@@ -191,6 +191,8 @@ fingerprintAuth.available().then(avail => {
 ```
 
 ## Changelog
+- 6.2.0  [Fixed a potential bypass on iOS](https://github.com/EddyVerbruggen/nativescript-fingerprint-auth/issues/41).
+- 6.1.0  [Fixed potentioal bypasses on Android](https://github.com/EddyVerbruggen/nativescript-fingerprint-auth/milestone/8?closed=1).
 - 6.0.3  [Android interfered with other plugins' Intents](https://github.com/EddyVerbruggen/nativescript-fingerprint-auth/pull/28).
 - 6.0.2  [Plugin not working correctly on iOS production builds / TestFlight](https://github.com/EddyVerbruggen/nativescript-fingerprint-auth/issues/27).
 - 6.0.1  Fixed a compatibility issues with NativeScript 3.4.

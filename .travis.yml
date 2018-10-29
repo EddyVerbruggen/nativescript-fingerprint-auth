@@ -2,10 +2,9 @@ android:
   components:
     - tools
     - platform-tools
-    - build-tools-26.0.1
+    - build-tools-27.0.3
     - android-26
     - extra-android-m2repository
-    - sys-img-armeabi-v7a-android-21
 
 before_cache:
     - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -32,40 +31,40 @@ matrix:
     - stage: "Lint"
       language: node_js
       os: linux
-      node_js: "6"
+      node_js: "8"
       script: "npm run ci.tslint"
     - stage: "WebPack"
       os: osx
       env:
         - Webpack="iOS"
-      osx_image: xcode9
+      osx_image: xcode9.2
       language: node_js
-      node_js: "6"
+      node_js: "8"
       jdk: oraclejdk8
-      script: cd ../demo && tns build ios --bundle
+      script: cd ../demo && travis_wait travis_retry tns build ios --bundle
     - language: android
       os: linux
       env:
         - Webpack="Android"
       jdk: oraclejdk8
-      before_install: nvm install 6.10.3
-      script: cd ../demo && tns build android --bundle
+      before_install: nvm install 8.11.4
+      script: cd ../demo && travis_wait travis_retry tns build android --bundle
     - stage: "Build"
       env:
         - BuildAndroid="25"
       language: android
       os: linux
       jdk: oraclejdk8
-      before_install: nvm install 6.10.3
+      before_install: nvm install 8.11.4
       script:
-        - cd ../demo && tns build android
+        - cd ../demo && travis_wait travis_retry tns build android
     - os: osx
       env:
         - BuildiOS="11"
-        - Xcode="9"
-      osx_image: xcode9
+        - Xcode="9.2"
+      osx_image: xcode9.2
       language: node_js
-      node_js: "6"
+      node_js: "8"
       jdk: oraclejdk8
       script:
-        - cd ../demo && tns build ios
+        - cd ../demo && travis_wait travis_retry tns build ios
