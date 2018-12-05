@@ -1,7 +1,6 @@
 # NativeScript Fingerprint Authentication
 
-> Also works with Face ID on iPhone X 🚀
-> Requires Xcode 9+, iOS 11 SDK
+> Also works with Face ID on iPhone X(s) 🚀
 
 [![Build Status][build-status]][build-url]
 [![NPM version][npm-image]][npm-url]
@@ -35,7 +34,13 @@ If that's set to a version less than 23, add this `overrideLibrary` line:
 ```
 
 ## Demo
-If you want a quickstart, [check out the demo app](https://github.com/EddyVerbruggen/nativescript-fingerprint-auth/tree/master/demo).
+If you want a quickstart, [check out the demo app](https://github.com/EddyVerbruggen/nativescript-fingerprint-auth/tree/master/demo). Run it locally using these commands:
+
+```bash
+git clone https://github.com/EddyVerbruggen/nativescript-fingerprint-auth
+cd nativescript-fingerprint-auth/src
+npm run demo.android # or demo.ios
+```
 
 <img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-fingerprint-auth/master/media/ios-demo-01.png" width="200px" /> <img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-fingerprint-auth/master/media/ios-demo-02.png" width="200px" /> <img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-fingerprint-auth/master/media/ios-demo-03.png" width="200px" /> <img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-fingerprint-auth/master/media/ios-demo-04.png" width="200px" /> <img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-fingerprint-auth/master/media/ios-demo-05.png" width="200px" />
 
