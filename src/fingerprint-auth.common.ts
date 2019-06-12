@@ -78,5 +78,7 @@ export interface FingerprintAuthApi {
    * This implementation uses LocalAuthentication and has no built-in passcode fallback on iOS.
    * On Android this is exactly the same as 'verifyFingerprint'
    */
-  verifyFingerprintWithCustomFallback(options: VerifyFingerprintWithCustomFallbackOptions): Promise<void>;
+  verifyFingerprintWithCustomFallback(
+    options: VerifyFingerprintWithCustomFallbackOptions
+  ): Promise<void>;
 }

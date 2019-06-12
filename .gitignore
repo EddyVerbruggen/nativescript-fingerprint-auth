@@ -9,6 +9,7 @@
 !src/angular/*.js
 !demo/karma.conf.js
 !demo/app/tests/*.js
+!demo/webpack.config.js
 demo/*.d.ts
 src/*.d.ts
 !src/index.d.ts
