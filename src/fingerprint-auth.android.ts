@@ -82,7 +82,7 @@ export class FingerprintAuth implements FingerprintAuthApi {
       resolve(false);
     });
   }
-  
+
 
   private verifyWithCustomAndroidUI(resolve, reject, authenticationCallback) {
     // this instance is com.jesusm.kfingerprintmanager.KFingerprintManager, not the android OS fingerprint manager
