@@ -1,32 +1,20 @@
 import * as app from "tns-core-modules/application";
 import { AndroidActivityResultEventData } from "tns-core-modules/application";
-import * as utils from "tns-core-modules/utils/utils";
-import {
-  BiometricIDAvailableResult,
-  ERROR_CODES,
-  FingerprintAuthApi,
-  VerifyFingerprintOptions,
-  VerifyFingerprintWithCustomFallbackOptions
-} from "./fingerprint-auth.common";
+import { ad as androidUtils } from "tns-core-modules/utils/utils";
+import { BiometricIDAvailableResult, ERROR_CODES, FingerprintAuthApi, VerifyFingerprintOptions, VerifyFingerprintWithCustomFallbackOptions } from "./fingerprint-auth.common";
 
-declare const android, com: any;
-
-const KeyStore = java.security.KeyStore;
-const Cipher = javax.crypto.Cipher;
-const KeyGenerator = javax.crypto.KeyGenerator;
-const KeyProperties = android.security.keystore.KeyProperties;
-const KeyGenParameterSpec = android.security.keystore.KeyGenParameterSpec;
+declare const com: any;
 
 const KEY_NAME = "fingerprintauth";
 const SECRET_BYTE_ARRAY = Array.create("byte", 16);
 const REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS = 788; // arbitrary
 
 export class FingerprintAuth implements FingerprintAuthApi {
-  private keyguardManager: any;
+  private keyguardManager: android.app.KeyguardManager;
   private fingerPrintManager: any;
 
   constructor() {
-    this.keyguardManager = utils.ad
+    this.keyguardManager = androidUtils
       .getApplicationContext()
       .getSystemService("keyguard");
   }
@@ -48,15 +36,32 @@ export class FingerprintAuth implements FingerprintAuthApi {
           return;
         }
 
-        const fingerprintManager = utils.ad
+        const fingerprintManager = androidUtils
           .getApplicationContext()
-          .getSystemService("fingerprint");
+          .getSystemService(
+            "fingerprint"
+          ) as android.hardware.fingerprint.FingerprintManager;
+
         if (!fingerprintManager.isHardwareDetected()) {
           // Device doesn't support fingerprint authentication
           reject(`Device doesn't support fingerprint authentication`);
         } else if (!fingerprintManager.hasEnrolledFingerprints()) {
-          // User hasn't enrolled any fingerprints to authenticate with
-          reject(`User hasn't enrolled any fingerprints to authenticate with`);
+          // If the user has not enrolled any fingerprints, they still might have the device secure so we can fallback
+          // to present the user with the swipe, password, pin device security screen regardless
+          // the developer can handle this resolve by checking the `touch` property and determine if they want to use the
+          // verifyFingerprint method or not since they'll know the user has no finger prints enrolled but do have a security option enabled
+          // https://developer.android.com/reference/android/app/KeyguardManager.html#isDeviceSecure() only 23+
+          if (this.keyguardManager.isDeviceSecure()) {
+            resolve({
+              any: true,
+              touch: false
+            });
+          } else {
+            // User hasn't enrolled any fingerprints to authenticate with
+            reject(
+              `User hasn't enrolled any fingerprints to authenticate with`
+            );
+          }
         } else {
           resolve({
             any: true,
@@ -77,8 +82,10 @@ export class FingerprintAuth implements FingerprintAuthApi {
       resolve(false);
     });
   }
+  
 
   private verifyWithCustomAndroidUI(resolve, reject, authenticationCallback) {
+    // this instance is com.jesusm.kfingerprintmanager.KFingerprintManager, not the android OS fingerprint manager
     this.fingerPrintManager.authenticate(
       authenticationCallback,
       this.getActivity().getSupportFragmentManager()
@@ -102,7 +109,7 @@ export class FingerprintAuth implements FingerprintAuthApi {
         } else if (options.useCustomAndroidUI && hasSupportFragment) {
           if (!this.fingerPrintManager) {
             this.fingerPrintManager = new com.jesusm.kfingerprintmanager.KFingerprintManager(
-              utils.ad.getApplicationContext(),
+              androidUtils.getApplicationContext(),
               KEY_NAME
             );
           }
@@ -239,26 +246,31 @@ export class FingerprintAuth implements FingerprintAuthApi {
    */
   private static createKey(options): void {
     try {
-      const keyStore = KeyStore.getInstance("AndroidKeyStore");
+      const keyStore = java.security.KeyStore.getInstance("AndroidKeyStore");
       keyStore.load(null);
-      const keyGenerator = KeyGenerator.getInstance(
-        KeyProperties.KEY_ALGORITHM_AES,
+      const keyGenerator = javax.crypto.KeyGenerator.getInstance(
+        android.security.keystore.KeyProperties.KEY_ALGORITHM_AES,
         "AndroidKeyStore"
       );
 
       keyGenerator.init(
-        new KeyGenParameterSpec.Builder(
+        new android.security.keystore.KeyGenParameterSpec.Builder(
           KEY_NAME,
-          KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT
+          android.security.keystore.KeyProperties.PURPOSE_ENCRYPT |
+            android.security.keystore.KeyProperties.PURPOSE_DECRYPT
         )
-          .setBlockModes([KeyProperties.BLOCK_MODE_CBC])
+          .setBlockModes([
+            android.security.keystore.KeyProperties.BLOCK_MODE_CBC
+          ])
           .setUserAuthenticationRequired(true)
           .setUserAuthenticationValidityDurationSeconds(
             options && options.authenticationValidityDuration
               ? options.authenticationValidityDuration
               : 5
           )
-          .setEncryptionPaddings([KeyProperties.ENCRYPTION_PADDING_PKCS7])
+          .setEncryptionPaddings([
+            android.security.keystore.KeyProperties.ENCRYPTION_PADDING_PKCS7
+          ])
           .build()
       );
       keyGenerator.generateKey();
@@ -276,17 +288,17 @@ export class FingerprintAuth implements FingerprintAuthApi {
 
   private tryEncrypt(options): boolean {
     try {
-      const keyStore = KeyStore.getInstance("AndroidKeyStore");
+      const keyStore = java.security.KeyStore.getInstance("AndroidKeyStore");
       keyStore.load(null);
       const secretKey = keyStore.getKey(KEY_NAME, null);
 
-      const cipher = Cipher.getInstance(
-        `${KeyProperties.KEY_ALGORITHM_AES}/${KeyProperties.BLOCK_MODE_CBC}/${
-          KeyProperties.ENCRYPTION_PADDING_PKCS7
-        }`
+      const cipher = javax.crypto.Cipher.getInstance(
+        `${android.security.keystore.KeyProperties.KEY_ALGORITHM_AES}/${
+          android.security.keystore.KeyProperties.BLOCK_MODE_CBC
+        }/${android.security.keystore.KeyProperties.ENCRYPTION_PADDING_PKCS7}`
       );
 
-      cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+      cipher.init(javax.crypto.Cipher.ENCRYPT_MODE, secretKey);
       cipher.doFinal(SECRET_BYTE_ARRAY);
 
       return true;
@@ -317,7 +329,9 @@ export class FingerprintAuth implements FingerprintAuthApi {
    * Starts the built-in Android ConfirmDeviceCredential activity.
    */
   private showAuthenticationScreen(options): void {
-    const intent = this.keyguardManager.createConfirmDeviceCredentialIntent(
+    // https://developer.android.com/reference/android/app/KeyguardManager#createConfirmDeviceCredentialIntent(java.lang.CharSequence,%2520java.lang.CharSequence)
+    const intent = (this
+      .keyguardManager as any).createConfirmDeviceCredentialIntent(
       options && options.title ? options.title : null,
       options && options.message ? options.message : null
     );
