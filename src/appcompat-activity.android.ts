@@ -1,4 +1,7 @@
-import { setActivityCallbacks, AndroidActivityCallbacks } from "tns-core-modules/ui/frame";
+import {
+  AndroidActivityCallbacks,
+  setActivityCallbacks
+} from "tns-core-modules/ui/frame";
 
 @JavaProxy("org.nativescript.fingerprintplugin.AppCompatActivity")
 class Activity extends android.support.v7.app.AppCompatActivity {
@@ -13,7 +16,11 @@ class Activity extends android.support.v7.app.AppCompatActivity {
   }
 
   public onSaveInstanceState(outState: android.os.Bundle): void {
-    this._callbacks.onSaveInstanceState(this, outState, super.onSaveInstanceState);
+    this._callbacks.onSaveInstanceState(
+      this,
+      outState,
+      super.onSaveInstanceState
+    );
   }
 
   public onStart(): void {
@@ -32,11 +39,31 @@ class Activity extends android.support.v7.app.AppCompatActivity {
     this._callbacks.onBackPressed(this, super.onBackPressed);
   }
 
-  public onRequestPermissionsResult(requestCode: number, permissions: Array<string>, grantResults: Array<number>): void {
-    this._callbacks.onRequestPermissionsResult(this, requestCode, permissions, grantResults, undefined);
+  public onRequestPermissionsResult(
+    requestCode: number,
+    permissions: Array<string>,
+    grantResults: Array<number>
+  ): void {
+    this._callbacks.onRequestPermissionsResult(
+      this,
+      requestCode,
+      permissions,
+      grantResults,
+      undefined
+    );
   }
 
-  public onActivityResult(requestCode: number, resultCode: number, data: android.content.Intent): void {
-    this._callbacks.onActivityResult(this, requestCode, resultCode, data, super.onActivityResult);
+  public onActivityResult(
+    requestCode: number,
+    resultCode: number,
+    data: android.content.Intent
+  ): void {
+    this._callbacks.onActivityResult(
+      this,
+      requestCode,
+      resultCode,
+      data,
+      super.onActivityResult
+    );
   }
 }
