@@ -3,6 +3,9 @@
     "id": "org.nativescript.fingerprintauth",
     "tns-ios": {
       "version": "5.4.1"
+    },
+    "tns-android": {
+      "version": "5.4.0"
     }
   },
   "dependencies": {

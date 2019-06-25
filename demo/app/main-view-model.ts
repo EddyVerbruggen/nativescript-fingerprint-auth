@@ -1,7 +1,4 @@
-import {
-  BiometricIDAvailableResult,
-  FingerprintAuth
-} from "nativescript-fingerprint-auth";
+import { BiometricIDAvailableResult, FingerprintAuth } from "nativescript-fingerprint-auth";
 import { Observable } from "tns-core-modules/data/observable";
 import { alert } from "tns-core-modules/ui/dialogs";
 
@@ -46,6 +43,7 @@ export class HelloWorldModel extends Observable {
   public doVerifyFingerprint(): void {
     this.fingerprintAuth
       .verifyFingerprint({
+        title: "Enter your password",
         message: "Scan yer finger", // optional
         authenticationValidityDuration: 10 // Android
       })
