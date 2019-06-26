@@ -6,5 +6,5 @@ repositories {
 }
 
 dependencies {
-	compile 'com.github.JesusM:FingerprintManager:v2.0.2'
+	implementation 'com.github.JesusM:FingerprintManager:v2.0.2'
 }
