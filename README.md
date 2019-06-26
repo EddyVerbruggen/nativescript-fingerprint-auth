@@ -109,17 +109,22 @@ So with version 6.0.0 this plugin added the ability to override the default scre
 One important thing to realize is that the 'use password' option in this dialog doesn't verify the entered password against
 the system password. It must be used to compare the entered password with an app-specific password the user previously configured.
 
-##### Mandatory change
+##### Optional change
+If you want to override the default texts of this popover screen, then drop a file `App_Resources/Android/values/strings.xml` in your project and override the properties you like. See the demo app for an example.
+
+##### ⚠️ Important note when using NativeScript < 5.4.0
+**Use plugin version < 7.0.0 to be able to use this feature with NativeScript < 5.4.0**
+
+> Skip this section if you're on NativeScript 5.4.0 or newer because it's all handled automatically! 
+
 To be able to use this screen, a change to `App_Resources/Android/AndroidManifest.xml` is required as our NativeScript activity needs to extend AppCompatActivity (note that in the future this may become the default for NativeScript apps).
 
 To do so, open the file and replace `<activity android:name="com.tns.NativeScriptActivity"` by `<activity android:name="org.nativescript.fingerprintplugin.AppCompatActivity"`.
 
 Note that if you forget this and set `useCustomAndroidUI: true` the plugin will `reject` the Promise with a relevant error message.
 
-##### Optional change
-If you want to override the default texts of this popover screen, then drop a file `App_Resources/Android/values/strings.xml` in your project and override the properties you like. See the demo app for an example.
+**Mandatory changes for webpack and snapshot builds (again, for NativeScript < 5.4.0 only)**
 
-##### Mandatory changes for webpack and snapshot builds
 If you are using Webpack with or without snapshot there are couple more changes required in order to make the custom UI work in your production builds.  
 First you need to edit your `vendor-platform.android.ts` file and add `require("nativescript-fingerprint-auth/appcompat-activity");`. You can see the changed file in the demo app [here](https://github.com/EddyVerbruggen/nativescript-fingerprint-auth/blob/master/demo/app/vendor-platform.android.ts#L9).  
 The second change should be made in your `webpack.config.js` file. Find the place where the `NativeScriptSnapshotPlugin` is pushed to the webpack plugins and add `"nativescript-fingerprint-auth"` in the `tnsJavaClassesOptions.packages` array. The result should look something like:
