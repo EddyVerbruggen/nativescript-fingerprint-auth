@@ -83,7 +83,7 @@ export class FingerprintAuth implements FingerprintAuthApi {
         }
 
         if (!FingerprintAuth.createKeyChainEntry()) {
-          this.verifyFingerprintWithCustomFallback(options).then(
+          this.verifyFingerprintWithCustomFallback(options, true).then(
               resolve,
               reject
           );
@@ -119,7 +119,8 @@ export class FingerprintAuth implements FingerprintAuthApi {
    * This implementation uses LocalAuthentication and has no built-in passcode fallback
    */
   verifyFingerprintWithCustomFallback(
-      options: VerifyFingerprintWithCustomFallbackOptions
+      options: VerifyFingerprintWithCustomFallbackOptions,
+      usePasscodeFallback = false
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
@@ -134,7 +135,7 @@ export class FingerprintAuth implements FingerprintAuthApi {
           laContext.localizedFallbackTitle = options.fallbackMessage;
         }
         laContext.evaluatePolicyLocalizedReasonReply(
-            LAPolicy.DeviceOwnerAuthenticationWithBiometrics,
+            usePasscodeFallback ? LAPolicy.DeviceOwnerAuthentication : LAPolicy.DeviceOwnerAuthenticationWithBiometrics,
             message,
             (ok, error) => {
               if (ok) {
