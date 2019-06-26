@@ -3,8 +3,16 @@ import {
   setActivityCallbacks
 } from "tns-core-modules/ui/frame";
 
+declare const global: any;
+
+function useAndroidX () {
+  return global.androidx && global.androidx.appcompat;
+}
+
+const AppPackageName = useAndroidX() ? global.androidx.appcompat.app : android.support.v7.app;
+
 @JavaProxy("org.nativescript.fingerprintplugin.AppCompatActivity")
-class Activity extends android.support.v7.app.AppCompatActivity {
+class Activity extends AppPackageName.AppCompatActivity {
   private _callbacks: AndroidActivityCallbacks;
 
   public onCreate(savedInstanceState: android.os.Bundle): void {

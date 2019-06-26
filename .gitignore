@@ -11,6 +11,7 @@
 !demo/app/tests/*.js
 !demo/webpack.config.js
 demo/*.d.ts
+!demo/references.d.ts
 src/*.d.ts
 !src/index.d.ts
 !src/references.d.ts
