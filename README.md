@@ -110,7 +110,7 @@ One important thing to realize is that the 'use password' option in this dialog 
 the system password. It must be used to compare the entered password with an app-specific password the user previously configured.
 
 ##### Optional change
-If you want to override the default texts of this popover screen, then drop a file `App_Resources/Android/values/strings.xml` in your project and override the properties you like. See the demo app for an example.
+If you want to override the default texts of this popover screen, then drop a file [`strings.xml`](https://github.com/EddyVerbruggen/nativescript-fingerprint-auth/blob/5a14f96f7e752953df506401588b5694e3ab6444/demo/app/App_Resources/Android/src/main/res/values/strings.xml) in your project and override the properties you like. See the demo app for an example.
 
 ##### ⚠️ Important note when using NativeScript < 5.4.0
 **Use plugin version < 7.0.0 to be able to use this feature with NativeScript < 5.4.0**
