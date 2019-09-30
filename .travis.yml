@@ -42,7 +42,7 @@ matrix:
       os: osx
       env:
         - Webpack="iOS"
-      osx_image: xcode10.0
+      osx_image: xcode10
       language: node_js
       node_js: "10"
       jdk: oraclejdk8
@@ -67,7 +67,7 @@ matrix:
       env:
         - BuildiOS="12"
         - Xcode="10.0"
-      osx_image: xcode10.0
+      osx_image: xcode10
       language: node_js
       node_js: "10"
       jdk: oraclejdk8
