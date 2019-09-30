@@ -46,7 +46,7 @@ matrix:
       language: node_js
       node_js: "10"
       jdk: oraclejdk8
-      script: cd ../demo && travis_wait travis_retry tns build ios --bundle
+      script: pod repo update && cd ../demo && travis_wait travis_retry tns build ios --bundle
     - language: android
       os: linux
       env:
@@ -72,4 +72,4 @@ matrix:
       node_js: "10"
       jdk: oraclejdk8
       script:
-        - cd ../demo && travis_wait travis_retry tns build ios
+        - pod repo update && cd ../demo && travis_wait travis_retry tns build ios
