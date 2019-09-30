@@ -42,11 +42,11 @@ matrix:
       os: osx
       env:
         - Webpack="iOS"
-      osx_image: xcode10.0
+      osx_image: xcode10
       language: node_js
       node_js: "10"
       jdk: oraclejdk8
-      script: cd ../demo && travis_wait travis_retry tns build ios --bundle
+      script: pod repo update && cd ../demo && travis_wait travis_retry tns build ios --bundle
     - language: android
       os: linux
       env:
@@ -67,9 +67,9 @@ matrix:
       env:
         - BuildiOS="12"
         - Xcode="10.0"
-      osx_image: xcode10.0
+      osx_image: xcode10
       language: node_js
       node_js: "10"
       jdk: oraclejdk8
       script:
-        - cd ../demo && travis_wait travis_retry tns build ios
+        - pod repo update && cd ../demo && travis_wait travis_retry tns build ios
