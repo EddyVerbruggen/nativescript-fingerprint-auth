@@ -47,12 +47,7 @@ export class HelloWorldModel extends Observable {
         message: "Scan yer finger", // optional
         authenticationValidityDuration: 10 // Android
       })
-      .then(() => {
-        alert({
-          title: "Biometric ID / passcode OK",
-          okButtonText: "Sweet"
-        });
-      })
+      .then(() => this.set("status", "Biometric ID / passcode OK"))
       .catch(err => {
         alert({
           title: "Biometric ID NOT OK / canceled",
@@ -95,13 +90,7 @@ export class HelloWorldModel extends Observable {
         fallbackMessage: "Enter PIN", // optional
         authenticationValidityDuration: 10 // Android
       })
-      .then(() => {
-        this.set("status", "Biometric ID OK");
-        alert({
-          title: "Biometric ID OK",
-          okButtonText: "Sweet"
-        });
-      })
+      .then(() => this.set("status", "Biometric ID OK"))
       .catch(error => {
         this.set("status", "Biometric ID NOT OK: " + JSON.stringify(error));
         alert({

@@ -65,8 +65,8 @@
   "homepage": "https://github.com/eddyverbruggen/nativescript-fingerprint-auth",
   "readmeFilename": "README.md",
   "devDependencies": {
-    "tns-core-modules": "next",
-    "tns-platform-declarations": "next",
+    "tns-core-modules": "~6.1.1",
+    "tns-platform-declarations": "~6.1.1",
     "typescript": "~3.4.5",
     "tslint": "^5.17.0"
   }
