@@ -81,4 +81,6 @@ export interface FingerprintAuthApi {
   verifyFingerprintWithCustomFallback(
     options: VerifyFingerprintWithCustomFallbackOptions
   ): Promise<void>;
+
+  close(): void;
 }

@@ -10,6 +10,8 @@ const keychainItemIdentifier = "TouchIDKey";
 let keychainItemServiceName = null;
 
 export class FingerprintAuth implements FingerprintAuthApi {
+  private laContext: LAContext;
+
   available(): Promise<BiometricIDAvailableResult> {
     return new Promise((resolve, reject) => {
       try {
@@ -124,17 +126,17 @@ export class FingerprintAuth implements FingerprintAuthApi {
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
-        const laContext = LAContext.new();
-        if (!laContext.canEvaluatePolicyError(LAPolicy.DeviceOwnerAuthenticationWithBiometrics)) {
+        this.laContext = LAContext.new();
+        if (!this.laContext.canEvaluatePolicyError(LAPolicy.DeviceOwnerAuthenticationWithBiometrics)) {
           reject("Not available");
           return;
         }
 
         const message = (options !== null && options.message) || "Scan your finger";
         if (options !== null && options.fallbackMessage) {
-          laContext.localizedFallbackTitle = options.fallbackMessage;
+          this.laContext.localizedFallbackTitle = options.fallbackMessage;
         }
-        laContext.evaluatePolicyLocalizedReasonReply(
+        this.laContext.evaluatePolicyLocalizedReasonReply(
             usePasscodeFallback ? LAPolicy.DeviceOwnerAuthentication : LAPolicy.DeviceOwnerAuthenticationWithBiometrics,
             message,
             (ok, error) => {
@@ -179,6 +181,12 @@ export class FingerprintAuth implements FingerprintAuthApi {
 
       SecItemAdd(attributes, null);
       return true;
+    }
+  }
+
+  close(): void {
+    if (this.laContext) {
+      this.laContext.invalidate();
     }
   }
 }
