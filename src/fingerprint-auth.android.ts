@@ -42,7 +42,7 @@ export class FingerprintAuth implements FingerprintAuthApi {
                 "fingerprint"
             ) as android.hardware.fingerprint.FingerprintManager;
 
-        if (!fingerprintManager.isHardwareDetected()) {
+        if (!fingerprintManager || !fingerprintManager.isHardwareDetected()) {
           // Device doesn't support fingerprint authentication
           reject(`Device doesn't support fingerprint authentication`);
         } else if (!fingerprintManager.hasEnrolledFingerprints()) {
