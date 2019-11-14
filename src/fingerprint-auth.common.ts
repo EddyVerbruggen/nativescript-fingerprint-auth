@@ -1,4 +1,5 @@
 export enum ERROR_CODES {
+  BIOMETRY_LOCKOUT = -8,
   PASSWORD_FALLBACK_SELECTED = -3, // historically this is what iOS uses, so using that as well
   DEVELOPER_ERROR = 10,
   NOT_AVAILABLE = 20,

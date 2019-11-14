@@ -3,7 +3,8 @@ import {
   BiometricIDAvailableResult,
   FingerprintAuthApi,
   VerifyFingerprintOptions,
-  VerifyFingerprintWithCustomFallbackOptions
+  VerifyFingerprintWithCustomFallbackOptions,
+  ERROR_CODES
 } from "./fingerprint-auth.common";
 
 const keychainItemIdentifier = "TouchIDKey";
@@ -24,11 +25,29 @@ export class FingerprintAuth implements FingerprintAuthApi {
           face: hasBio && laContext.biometryType === 2 // LABiometryType.TypeFaceID,
         });
       } catch (ex) {
+        if (ex.error != null && ex.error.code != null) {
+          if (ex.error.code === LAError.BiometryLockout) {
+            reject({
+              code: ERROR_CODES.BIOMETRY_LOCKOUT,
+              message: "Biometric lockout.",
+            });
+          } else if (ex.error.code === LAError.BiometryNotEnrolled) {
+            reject({
+              code: ERROR_CODES.NOT_CONFIGURED,
+              message: "No biometric authentication has been configured.",
+            });
+          } else if (ex.error.code === LAError.BiometryNotAvailable) {
+            resolve({
+              any: false
+            });
+          }
+        } else {
+          reject({
+            code: ERROR_CODES.UNEXPECTED_ERROR,
+            message: "Unexpected error",
+          });
+        }
         console.log(`fingerprint-auth.available: ${ex}`);
-        // if no identities are enrolled, there will be an exception (so not using 'reject' here)
-        resolve({
-          any: false
-        });
       }
     });
   }
@@ -41,7 +60,10 @@ export class FingerprintAuth implements FingerprintAuthApi {
         // we expect the dev to have checked 'isAvailable' already so this should not return an error,
         // we do however need to run canEvaluatePolicy here in order to get a non-nil evaluatedPolicyDomainState
         if (!laContext.canEvaluatePolicyError(LAPolicy.DeviceOwnerAuthenticationWithBiometrics)) {
-          reject("Not available");
+          reject({
+            code: ERROR_CODES.NOT_AVAILABLE,
+            message: `Biometry not available. Call 'available' first.`
+          });
           return;
         }
 
@@ -108,7 +130,10 @@ export class FingerprintAuth implements FingerprintAuthApi {
         if (res === 0) {
           resolve();
         } else {
-          reject();
+          reject({
+            code: ERROR_CODES.UNEXPECTED_ERROR,
+            message: `Encountered unexpected error with SecItemCopyMatching`
+          });
         }
       } catch (ex) {
         console.log(`Error in fingerprint-auth.verifyFingerprint: ${ex}`);
@@ -128,7 +153,10 @@ export class FingerprintAuth implements FingerprintAuthApi {
       try {
         this.laContext = LAContext.new();
         if (!this.laContext.canEvaluatePolicyError(LAPolicy.DeviceOwnerAuthenticationWithBiometrics)) {
-          reject("Not available");
+          reject({
+            code: ERROR_CODES.NOT_AVAILABLE,
+            message: `Biometry not available. Call 'available' first.`
+          });
           return;
         }
 

@@ -32,7 +32,9 @@ export class FingerprintAuth implements FingerprintAuthApi {
 
         // The fingerprint API is only available from Android 6.0 (M, Api level 23)
         if (android.os.Build.VERSION.SDK_INT < 23) {
-          reject(`Your api version doesn't support fingerprint authentication`);
+          resolve({
+            any: false
+          });
           return;
         }
 
@@ -44,7 +46,9 @@ export class FingerprintAuth implements FingerprintAuthApi {
 
         if (!fingerprintManager || !fingerprintManager.isHardwareDetected()) {
           // Device doesn't support fingerprint authentication
-          reject(`Device doesn't support fingerprint authentication`);
+          resolve({
+            any: false
+          });
         } else if (!fingerprintManager.hasEnrolledFingerprints()) {
           // If the user has not enrolled any fingerprints, they still might have the device secure so we can fallback
           // to present the user with the swipe, password, pin device security screen regardless
@@ -58,9 +62,10 @@ export class FingerprintAuth implements FingerprintAuthApi {
             });
           } else {
             // User hasn't enrolled any fingerprints to authenticate with
-            reject(
-                `User hasn't enrolled any fingerprints to authenticate with`
-            );
+            reject({
+              code: ERROR_CODES.NOT_CONFIGURED,
+              message: `User hasn't enrolled any fingerprints to authenticate with`
+            });
           }
         } else {
           resolve({
