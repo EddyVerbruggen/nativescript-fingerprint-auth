@@ -31,22 +31,24 @@ export class FingerprintAuth implements FingerprintAuthApi {
               code: ERROR_CODES.BIOMETRY_LOCKOUT,
               message: "Biometric lockout.",
             });
+            return;
           } else if (ex.error.code === LAError.BiometryNotEnrolled) {
             reject({
               code: ERROR_CODES.NOT_CONFIGURED,
               message: "No biometric authentication has been configured.",
             });
+            return;
           } else if (ex.error.code === LAError.BiometryNotAvailable) {
             resolve({
               any: false
             });
+            return;
           }
-        } else {
-          reject({
-            code: ERROR_CODES.UNEXPECTED_ERROR,
-            message: "Unexpected error",
-          });
         }
+        reject({
+          code: ERROR_CODES.UNEXPECTED_ERROR,
+          message: "Unexpected error",
+        });
         console.log(`fingerprint-auth.available: ${ex}`);
       }
     });
