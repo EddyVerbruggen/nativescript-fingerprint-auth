@@ -109,6 +109,8 @@ So with version 6.0.0 this plugin added the ability to override the default scre
 One important thing to realize is that the 'use password' option in this dialog doesn't verify the entered password against
 the system password. It must be used to compare the entered password with an app-specific password the user previously configured.
 
+The password fallback can be disabled by overriding the default `use_password` text to a blank string (see optional change below for details on how to do this).
+
 ##### Optional change
 If you want to override the default texts of this popover screen, then drop a file [`strings.xml`](https://github.com/EddyVerbruggen/nativescript-fingerprint-auth/blob/5a14f96f7e752953df506401588b5694e3ab6444/demo/app/App_Resources/Android/src/main/res/values/strings.xml) in your project and override the properties you like. See the demo app for an example.
 
