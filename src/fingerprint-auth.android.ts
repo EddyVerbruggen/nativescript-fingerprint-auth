@@ -1,6 +1,4 @@
-import * as app from "tns-core-modules/application";
-import { AndroidActivityResultEventData } from "tns-core-modules/application";
-import { ad as androidUtils } from "tns-core-modules/utils/utils";
+import { Application, AndroidActivityResultEventData, Utils, AndroidApplication } from "@nativescript/core";
 import { BiometricIDAvailableResult, ERROR_CODES, FingerprintAuthApi, VerifyFingerprintOptions, VerifyFingerprintWithCustomFallbackOptions } from "./fingerprint-auth.common";
 
 declare const com: any;
@@ -14,7 +12,7 @@ export class FingerprintAuth implements FingerprintAuthApi {
   private fingerPrintManager: any;
 
   constructor() {
-    this.keyguardManager = androidUtils
+    this.keyguardManager = Utils.android
         .getApplicationContext()
         .getSystemService("keyguard");
   }
@@ -36,7 +34,7 @@ export class FingerprintAuth implements FingerprintAuthApi {
           return;
         }
 
-        const fingerprintManager = androidUtils
+        const fingerprintManager = Utils.android
             .getApplicationContext()
             .getSystemService(
                 "fingerprint"
@@ -108,7 +106,7 @@ export class FingerprintAuth implements FingerprintAuthApi {
         } else if (options.useCustomAndroidUI && hasSupportFragment) {
           if (!this.fingerPrintManager) {
             this.fingerPrintManager = new com.jesusm.kfingerprintmanager.KFingerprintManager(
-                androidUtils.getApplicationContext(),
+              Utils.android.getApplicationContext(),
                 KEY_NAME
             );
           }
@@ -181,14 +179,14 @@ export class FingerprintAuth implements FingerprintAuthApi {
                 });
               }
             }
-            app.android.off(
-                app.AndroidApplication.activityResultEvent,
+            Application.android.off(
+                AndroidApplication.activityResultEvent,
                 onActivityResult
             );
           };
 
-          app.android.on(
-              app.AndroidApplication.activityResultEvent,
+          Application.android.on(
+              AndroidApplication.activityResultEvent,
               onActivityResult
           );
 
@@ -355,6 +353,6 @@ export class FingerprintAuth implements FingerprintAuthApi {
   }
 
   private getActivity(): any /* android.app.Activity */ {
-    return app.android.foregroundActivity || app.android.startActivity;
+    return Application.android.foregroundActivity || Application.android.startActivity;
   }
 }

@@ -1,6 +1,6 @@
 {
-  "name": "nativescript-fingerprint-auth",
-  "version": "7.0.2",
+  "name": "@nativescript/fingerprint-auth",
+  "version": "7.0.0",
   "description": "A fingerprint authentication plugin for use in NativeScript apps",
   "main": "fingerprint-auth",
   "nativescript": {
@@ -13,13 +13,13 @@
     "android": {
       "tns-java-classes": {
         "modules": [
-          "nativescript-fingerprint-auth/appcompat-activity"
+          "@nativescript/fingerprint-auth/appcompat-activity"
         ]
       }
     }
   },
   "scripts": {
-    "build": "npm i && tsc",
+    "build": "npm i && ts-patch install && tsc",
     "demo.ios": "npm run preparedemo && cd ../demo && tns run ios",
     "demo.android": "npm run preparedemo && cd ../demo && tns platform remove android && tns run android",
     "test": "npm run tslint && npm run tslint.demo && cd ../demo && tns build ios && tns build android",
@@ -65,9 +65,14 @@
   "homepage": "https://github.com/eddyverbruggen/nativescript-fingerprint-auth",
   "readmeFilename": "README.md",
   "devDependencies": {
-    "tns-core-modules": "~6.1.1",
-    "tns-platform-declarations": "~6.1.1",
-    "typescript": "~3.4.5",
-    "tslint": "^5.17.0"
+    "@nativescript/core": "rc",
+    "@nativescript/types": "rc",
+    "@nativescript/webpack": "rc",
+    "typescript": "~3.9.0",
+    "tslint": "^6.1.3",
+    "ts-patch": "~1.3.0"
+  },
+  "dependencies": {
+    "ts-node": "^8.10.2"
   }
 }
