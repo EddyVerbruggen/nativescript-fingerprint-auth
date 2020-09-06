@@ -1,6 +1,6 @@
 # NativeScript Fingerprint Authentication
 
-> Also works with Face ID on iPhone X(s) 🚀
+> Also works with Face ID on iPhones 🚀
 
 [![Build Status][build-status]][build-url]
 [![NPM version][npm-image]][npm-url]
@@ -14,6 +14,8 @@
 [downloads-image]:http://img.shields.io/npm/dm/nativescript-fingerprint-auth.svg
 [twitter-image]:https://img.shields.io/twitter/follow/eddyverbruggen.svg?style=social&label=Follow%20me
 [twitter-url]:https://twitter.com/eddyverbruggen
+
+> ⚠️ Looking for NativeScript 7 compatibilty? Go to [the NativeScript/plugins repo](https://github.com/NativeScript/plugins/tree/master/packages/fingerprint-auth).
 
 <img src="https://github.com/EddyVerbruggen/nativescript-fingerprint-auth/raw/master/media/fingerprint.png" />
 
