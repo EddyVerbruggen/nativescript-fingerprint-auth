@@ -1,4 +1,4 @@
-import { ios as iOSUtils } from "tns-core-modules/utils/utils";
+import { Utils } from "@nativescript/core";
 import {
   BiometricIDAvailableResult,
   FingerprintAuthApi,
@@ -46,7 +46,7 @@ export class FingerprintAuth implements FingerprintAuthApi {
         }
 
         // only supported on iOS9+, so check this.. if not supported just report back as false
-        if (iOSUtils.MajorVersion < 9) {
+        if (Utils.ios.MajorVersion < 9) {
           resolve(false);
           return;
         }
